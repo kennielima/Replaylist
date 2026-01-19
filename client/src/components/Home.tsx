@@ -19,8 +19,6 @@ import Link from "next/link"
 import Image from "next/image"
 import SearchByQuery from "./SearchByQuery"
 import { containerVariants, itemVariants } from "@/lib/utils"
-import { useQuery } from "@tanstack/react-query"
-import fetchSpotifyPlaylist from "@/services/getSpotifyPlaylist"
 
 interface HomepageProps {
     playlistData?: Playlist[]
@@ -56,7 +54,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                 animate="visible"
                 variants={heroVariants}
             >
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-purple-600/20" />
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-purple-600/20 px-6 sm:px-10 lg:px-16" />
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-10 lg:px-12 py-16 lg:py-20">
                     <div className="text-center">
                         <motion.div
@@ -65,8 +63,11 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                             transition={{ duration: 0.6, delay: 0.2 }}
                             className="flex justify-center mb-6"
                         >
-                            <div className="p-4 bg-white/10 backdrop-blur-md rounded-full">
-                                <Headphones className="h-12 w-12 text-purple-400" />
+                            <div className="relative p-4 bg-white/10 backdrop-blur-md rounded-full">
+                                <Headphones className="h-12 w-12 text-green-400/90" />
+                                <div className="absolute -top-2 -right-2 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                                    <Play className="w-3 h-3 text-white fill-white" />
+                                </div>
                             </div>
                         </motion.div>
 
@@ -81,7 +82,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                                 {" "}
                                 memories{" "}
                             </span>
-                            shouldn't.
+                            shouldn&apos;t.
                         </motion.h1>
 
                         <motion.p
@@ -90,7 +91,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.4 }}
                         >
-                            Track any Spotify playlist and rediscover the songs you loved, exactly as they were
+                            Track your favourite Spotify playlists, see how they evolve and rediscover the songs you loved, exactly as they were.
                         </motion.p>
                         <SearchByQuery category={'playlist'} user={user} />
                     </div>
@@ -128,7 +129,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
             </motion.section>
 
             {/* Popular Charts Section */}
-            <section className="py-20">
+            <section className="py-20 px-6 sm:px-10 lg:px-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <motion.div
                         className="text-center mb-16"
@@ -142,7 +143,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                             <h2 className="text-3xl md:text-4xl font-bold text-white">Popular Charts</h2>
                         </div>
                         <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-                            Explore the most trending playlists and their weekly snapshots.
+                            Explore the most trending playlists and their evolution in time.
                         </p>
                     </motion.div>
 
@@ -176,7 +177,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                             whileInView="visible"
                             viewport={{ once: true }}
                         >
-                            {playlists?.map((playlist: any) => (
+                            {playlists?.map((playlist: Playlist) => (
                                 <motion.div
                                     key={playlist.playlistId}
                                     variants={itemVariants}
@@ -274,7 +275,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
             {/* CTA Section */}
             {/* {!user && ( */}
             <motion.section
-                className="py-20 bg-gradient-to-r from-purple-600/20 to-purple-600/20"
+                className="py-20 px-6 sm:px-10 lg:px-16 bg-gradient-to-r from-purple-600/20 to-purple-600/20"
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 transition={{ duration: 0.8 }}

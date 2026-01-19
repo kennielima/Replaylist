@@ -17,9 +17,8 @@ type UserTypeProps = {
     user: User
     playlistData: { data: Playlist[] },
     trackedPlaylists: Playlist[],
-    id: string
 }
-const UserComponent = ({ user, playlistData, trackedPlaylists, id }: UserTypeProps) => {
+const UserComponent = ({ user, playlistData, trackedPlaylists }: UserTypeProps) => {
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
     const [currView, setCurrView] = useState<"playlists" | "snapshots">("playlists");
     const [searchKeyword, setSearchKeyword] = useState<string>("");
@@ -29,7 +28,7 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, id }: UserTypePro
         playlist?.name.toLowerCase().includes(searchKeyword.toLowerCase())
     );
 
-    let playlistsToShow = currView === "playlists" ? filteredPlaylists : trackedPlaylists;
+    const playlistsToShow = currView === "playlists" ? filteredPlaylists : trackedPlaylists;
 
     return (
         <Fragment>

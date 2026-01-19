@@ -57,7 +57,9 @@ export const itemVariants = {
   },
 }
 
-const exportFn = (data: any[]) => {
+export const exportFn = <T extends Record<string, unknown>>(data?: T[]) => {
+  if (!data || data.length === 0) return;
+
   const csv = [
     Object.keys(data[0]).join(","),
     ...data.map(item =>

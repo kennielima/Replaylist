@@ -113,7 +113,7 @@ const PlaylistHeader = ({
                                         <DialogHeader>
                                             <DialogTitle className="text-white">Start Tracking Playlist</DialogTitle>
                                             <DialogDescription className="text-slate-300">
-                                                Track changes to this playlist over time. We'll take weekly snapshots and show you how it
+                                                Track changes to this playlist over time. We&apos;ll take weekly snapshots and show you how it
                                                 evolves.
                                             </DialogDescription>
                                         </DialogHeader>
@@ -121,7 +121,7 @@ const PlaylistHeader = ({
                                             <Alert className="border-purple-500/20 bg-purple-500/10">
                                                 <Camera className="h-4 w-4 text-purple-400" />
                                                 <AlertDescription className="text-purple-300">
-                                                    We'll automatically take snapshots every week and notify you of changes.
+                                                    We&apos;ll automatically take snapshots every week and notify you of changes.
                                                 </AlertDescription>
                                             </Alert>
                                             <div className="text-sm text-slate-400">

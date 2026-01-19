@@ -55,7 +55,6 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser }: 
 
     const [snapshotDate, setSnapshotDate] = useState<string>(formattedFirstSnapDate);
     const [snapshotData, setSnapshotData] = useState(formattedFirstSnapData);
-    const [snapTracks, setSnapTracks] = useState<Track[]>(tracks);
     const [snapshotTracks, setSnapshotTracks] = useState<SnapshotTrack[]>([]);
     const [searchKeyword, setSearchKeyword] = useState<string>("");
 
@@ -101,7 +100,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser }: 
             // Invalidate queries to refetch snapshots list
             queryClient.invalidateQueries({ queryKey: ['snapshots', playlistId] });
         },
-        onError: (error) => { }
+        // onError: (error) => { }
     });
 
     const stopTrackerMutation = useMutation({
@@ -110,7 +109,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser }: 
             setIsTracking(false);
             queryClient.invalidateQueries({ queryKey: ['snapshots', playlistId] });
         },
-        onError: (error) => { }
+        // onError: (error) => { }
     });
 
     const handleTracker = () => {
@@ -139,7 +138,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser }: 
         }
     }
 
-    const filteredSnapTracks = snapTracks?.filter(track =>
+    const filteredSnapTracks = tracks?.filter(track =>
         track.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         track.artists.some(artist => artist.toLowerCase().includes(searchKeyword.toLowerCase()))
     );
@@ -217,7 +216,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser }: 
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     {!isTracking &&
-                                        (filteredSnapTracks?.map((track: Track, index: number) => (
+                                        (filteredSnapTracks?.map((track: Track) => (
                                             <Link
                                                 key={track.rank}
                                                 href={`${process.env.NEXT_PUBLIC_SPOTIFY_URL}/track/${track.trackId}`}

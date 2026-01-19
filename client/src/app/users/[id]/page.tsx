@@ -16,9 +16,10 @@ const page = async ({ params }: { params: Params }) => {
     const trackedPlaylists = id === 'me' && await fetchMySnapshots();
 
     if (id === "me" && !user)
-        redirect('/login')
+        redirect('/login');
+
     return (
-        <UserComponent user={user} playlistData={playlistData} trackedPlaylists={trackedPlaylists.playlists} id={id} />
+        <UserComponent user={user} playlistData={playlistData} trackedPlaylists={trackedPlaylists.playlists} />
     )
 }
 

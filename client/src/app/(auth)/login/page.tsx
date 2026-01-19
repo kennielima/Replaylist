@@ -1,11 +1,20 @@
 import { Card } from "@/components/ui/card"
+import { Headphones, Play } from "lucide-react"
 import React from 'react'
 
 const page = () => {
     return (
-        <div className='flex flex-col gap-12 my-16 items-center'>
+        <div className='flex flex-col gap-6 my-16 items-center'>
             <div className="flex flex-col items-center gap-4 text-center w-2/4">
-                <h3 className="text-3xl font-bold text-white">Playlist Capsule</h3>
+                <div className="flex items-center justify-center space-x-2">
+                    <div className="relative p-2 bg-purple-600/20 rounded-lg border border-purple-500/30">
+                        <Headphones className="h-7 w-7 text-green-400/90" />
+                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center">
+                            <Play className="w-3 h-3 text-white fill-white" />
+                        </div>
+                    </div>
+                    <h3 className="text-3xl font-bold text-green-200">Replaylist</h3>
+                </div>
                 <h3 className="text-4xl font-semibold text-white">Your Spotify Journey Visualized</h3>
                 <h3 className="text-slate-300">Connect your Spotify account and track your favourite playlists, see the evolution of popular music charts.</h3>
             </div>
@@ -46,6 +55,12 @@ const page = () => {
                     <div className="text-slate-300 text-xs mt-4 text-center">By continuing, you agree to let PlaylistTracker access your Spotify account data to provide personalized insights and recommendations.</div>
                 </div>
             </Card>
+            <div className="mt-4 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-sm text-slate-300">Secure OAuth Authentication</span>
+                </div>
+            </div>
         </div>
     )
 }

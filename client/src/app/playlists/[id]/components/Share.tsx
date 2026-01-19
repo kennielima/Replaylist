@@ -1,9 +1,9 @@
 "use client"
 import React, { useState } from 'react'
-import { Copy, Share2, Share as ShareIcon, X } from 'lucide-react';
+import { Copy, Share2 } from 'lucide-react';
 import { Twitter, Whatsapp, Facebook, MailIcon } from '@/lib/icons'
 import Link from 'next/link';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
 const Share = ({ id }: { id: string }) => {
