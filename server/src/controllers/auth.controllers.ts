@@ -83,7 +83,7 @@ async function callback(req: Request, res: Response) {
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'PRODUCTION',
-            sameSite: 'strict',
+            sameSite: 'lax',
             maxAge: 24 * 60 * 60 * 1000
         })
         res.redirect(`${BASE_URL}/spotify/callback`);
@@ -98,7 +98,7 @@ async function logout(req: Request, res: Response) {
         res.cookie("token", '', {
             maxAge: 0,
             httpOnly: true,
-            sameSite: 'strict'
+            sameSite: 'lax'
         })
         return res.status(200).json({ message: "Logged out successfully" });
     }
