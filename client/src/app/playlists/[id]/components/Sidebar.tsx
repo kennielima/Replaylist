@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Playlist, Snapshot, Track } from '@/lib/types'
+import { Playlist, Snapshot, Track, User } from '@/lib/types'
 import { formatDate } from '@/lib/utils'
-import { Music } from 'lucide-react'
+import { Music, User as UserIcon } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
@@ -13,10 +13,11 @@ interface SidebarProps {
     tracks: Track[],
     playlistsData: Playlist[],
     allSnapshotsData: { data: Snapshot[] },
-    userId: string | null
+    userId: string | null,
+    trackerUser: User | null,
 }
 
-const Sidebar = ({ playlistsData, playlistData, tracks, allSnapshotsData, userId }: SidebarProps) => {
+const Sidebar = ({ playlistsData, playlistData, tracks, allSnapshotsData, userId, trackerUser }: SidebarProps) => {
     const currPlaylist = playlistData.data;
 
     return (
@@ -43,6 +44,15 @@ const Sidebar = ({ playlistsData, playlistData, tracks, allSnapshotsData, userId
                         <div className="flex justify-between">
                             <span className="text-slate-400">Tracking Start Date</span>
                             <span className="text-white font-medium">{currPlaylist?.trackingStartDate && formatDate(currPlaylist?.trackingStartDate)}</span>
+                        </div>
+                    )}
+                    {trackerUser && (
+                        <div className="flex justify-between items-center">
+                            <span className="text-slate-400">Tracked by</span>
+                            <Link href={`/users/${trackerUser.id}`} className="flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium text-sm transition-colors">
+                                <UserIcon className="h-3 w-3" />
+                                {trackerUser.email === process.env.NEXT_PUBLIC_SYS_ADMIN_EMAIL ? 'Admin' : trackerUser.name}
+                            </Link>
                         </div>
                     )}
                 </CardContent>

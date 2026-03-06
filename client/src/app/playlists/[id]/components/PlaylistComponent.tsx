@@ -26,10 +26,10 @@ interface PlaylistDetailPageProps {
     }
     playlistsData: Playlist[]
     currUser: User,
-    // snapshots: Snapshot[]
+    trackerUser: User | null,
 }
 
-export default function PlaylistPage({ playlistData, playlistsData, currUser }: PlaylistDetailPageProps) {
+export default function PlaylistPage({ playlistData, playlistsData, currUser, trackerUser }: PlaylistDetailPageProps) {
     const router = useRouter();
     const queryClient = useQueryClient();
     const playlist = playlistData?.data;
@@ -167,6 +167,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser }: 
                         handleTracker={handleTracker}
                         startIsPending={startTrackerMutation.isPending}
                         stopIsPending={stopTrackerMutation.isPending}
+                        snapshotsCount={allSnapshotsData?.data?.length ?? 0}
                     />
 
                     {/* Content */}
@@ -289,6 +290,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser }: 
                             tracks={tracks}
                             allSnapshotsData={allSnapshotsData}
                             userId={currUser?.id}
+                            trackerUser={trackerUser}
                         />
                     </div>
                 </div>

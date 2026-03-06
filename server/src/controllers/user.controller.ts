@@ -102,4 +102,44 @@ async function fetchUserSnapshots(req: TokenRequest, res: Response) {
     }
 }
 
-export { getMe, fetchCurrentUserPlaylists, fetchUserSnapshots }
+async function getUserById(req: Request, res: Response) {
+    const { id } = req.params;
+    const cacheKey = `user:${id}`;
+    const cached = await redis.get(cacheKey);
+
+    try {
+        if (cached) {
+            return res.status(200).json(JSON.parse(cached));
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                userImage: true,
+                spotifyId: true,
+                createdAt: true,
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const trackedPlaylists = await prisma.playlist.findMany({
+            where: { isTracked: true, isTrackedBy: user.id },
+            include: { Snapshot: true }
+        });
+
+        const response = { user, trackedPlaylists };
+        await redis.set(cacheKey, JSON.stringify(response), "EX", 3600);
+        return res.status(200).json(response);
+    } catch (error) {
+        logger.error("Error fetching user by id:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+export { getMe, fetchCurrentUserPlaylists, fetchUserSnapshots, getUserById }

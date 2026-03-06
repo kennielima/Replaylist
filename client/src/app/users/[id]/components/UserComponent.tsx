@@ -15,12 +15,13 @@ import React, { Fragment, useState } from 'react'
 
 type UserTypeProps = {
     user: User
-    playlistData: { data: Playlist[] },
+    playlistData: { data: Playlist[] } | null,
     trackedPlaylists: Playlist[],
+    isOwner?: boolean,
 }
-const UserComponent = ({ user, playlistData, trackedPlaylists }: UserTypeProps) => {
+const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }: UserTypeProps) => {
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-    const [currView, setCurrView] = useState<"playlists" | "snapshots">("playlists");
+    const [currView, setCurrView] = useState<"playlists" | "snapshots">(isOwner ? "playlists" : "snapshots");
     const [searchKeyword, setSearchKeyword] = useState<string>("");
 
     const playlists = playlistData?.data;
@@ -32,7 +33,7 @@ const UserComponent = ({ user, playlistData, trackedPlaylists }: UserTypeProps) 
 
     return (
         <Fragment>
-            {!playlists ? (
+            {isOwner && !playlists ? (
                 <SkeletonComponent />
             ) : (
                 <div className="">
@@ -60,7 +61,7 @@ const UserComponent = ({ user, playlistData, trackedPlaylists }: UserTypeProps) 
                                             />
                                             <span className='text-slate-200 pl-[-4px]'>: @</span>
                                             <Link
-                                                href={`${process.env.USER_URL}/${user?.spotifyId}`}
+                                                href={`${process.env.NEXT_PUBLIC_USER_URL}/${user?.spotifyId}`}
                                                 className="transition-all text-base text-slate-400 font-semibold hover:text-slate-300 pl-[-4px]"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
@@ -70,13 +71,15 @@ const UserComponent = ({ user, playlistData, trackedPlaylists }: UserTypeProps) 
                                         </div>
                                     </div>
                                 </div>
-                                <Button
-                                    size="lg"
-                                    className="bg-purple-600 hover:bg-purple-500 text-white px-4 cursor-pointer"
-                                    onClick={logout}
-                                >
-                                    Logout
-                                </Button>
+                                {isOwner && (
+                                    <Button
+                                        size="lg"
+                                        className="bg-purple-600 hover:bg-purple-500 text-white px-4 cursor-pointer"
+                                        onClick={logout}
+                                    >
+                                        Logout
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -89,22 +92,24 @@ const UserComponent = ({ user, playlistData, trackedPlaylists }: UserTypeProps) 
                             initial="hidden"
                             animate="visible"
                         >
-                            <motion.div
-                                variants={itemVariants}
-                                onClick={() => setCurrView("playlists")}
-                            >
-                                <Card className="bg-white/5 backdrop-blur-md border border-white/10 shadow-xl hover:scale-105 transition-transform duration-200 cursor-pointer hover:border-2">
-                                    <CardContent className="p-4 text-center">
-                                        <Music className="h-6 w-6 mx-auto mb-2 text-purple-400" />
-                                        <div className="text-2xl font-bold text-white">
-                                            {playlists?.length}
-                                        </div>
-                                        <div className="text-sm text-slate-300">
-                                            Playlists
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
+                            {isOwner && (
+                                <motion.div
+                                    variants={itemVariants}
+                                    onClick={() => setCurrView("playlists")}
+                                >
+                                    <Card className="bg-white/5 backdrop-blur-md border border-white/10 shadow-xl hover:scale-105 transition-transform duration-200 cursor-pointer hover:border-2">
+                                        <CardContent className="p-4 text-center">
+                                            <Music className="h-6 w-6 mx-auto mb-2 text-purple-400" />
+                                            <div className="text-2xl font-bold text-white">
+                                                {playlists?.length}
+                                            </div>
+                                            <div className="text-sm text-slate-300">
+                                                Playlists
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
+                            )}
                             <motion.div
                                 variants={itemVariants}
                                 onClick={() => setCurrView("snapshots")}
@@ -120,7 +125,6 @@ const UserComponent = ({ user, playlistData, trackedPlaylists }: UserTypeProps) 
                                         </div>
                                     </CardContent>
                                 </Card>
-
                             </motion.div>
                         </motion.div>
                         <motion.div
@@ -161,7 +165,11 @@ const UserComponent = ({ user, playlistData, trackedPlaylists }: UserTypeProps) 
                                 </div>
                             </motion.div>
                         </motion.div>
-                        <p className='text-xl font-semibold mt-10 mb-4'>{currView === "playlists" ? "Your Personal Playlists" : "Your Tracked Playlists"}</p>
+                        <p className='text-xl font-semibold mt-10 mb-4'>
+                            {currView === "playlists"
+                                ? "Your Personal Playlists"
+                                : isOwner ? "Your Tracked Playlists" : `${user?.name}'s Tracked Playlists`}
+                        </p>
                         {/* Playlists Grid */}
                         <motion.div
                             className={`grid gap-6 ${viewMode === "grid"
@@ -206,7 +214,6 @@ const UserComponent = ({ user, playlistData, trackedPlaylists }: UserTypeProps) 
                                                                 <h3 className="font-semibold text-white truncate">
                                                                     {playlist.name}
                                                                 </h3>
-                                                                <span className='text-xs text-slate-400'>{playlistData.data.length} tracks</span>
                                                                 {/* <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
                                                                     <MoreHorizontal className="h-4 w-4" />
                                                                 </Button> */}
@@ -263,7 +270,6 @@ const UserComponent = ({ user, playlistData, trackedPlaylists }: UserTypeProps) 
                                                                 {playlist.description}
                                                             </p>
                                                             <div className="flex items-center space-x-4 mt-1 text-xs text-slate-400">
-                                                                <span>{playlistData.data.length} tracks</span>
                                                                 {/* <span>{playlist.duration}</span> */}
                                                                 {playlist.userId !== null && (
                                                                     <div className="flex items-center space-x-4 text-xs text-slate-400">

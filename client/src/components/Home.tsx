@@ -55,7 +55,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                 variants={heroVariants}
             >
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-purple-600/20 px-6 sm:px-10 lg:px-16" />
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-10 lg:px-12 py-16 lg:py-20">
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-10 lg:px-12 py-12 lg:py-20">
                     <div className="text-center">
                         <motion.div
                             initial={{ scale: 0.8, opacity: 0 }}
