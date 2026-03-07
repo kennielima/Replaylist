@@ -70,11 +70,17 @@ async function callback(req: Request, res: Response) {
             return res.status(400).json({ error: 'spotify_user_fetch_failed', status: userResponse.status });
         }
         const userData = await userResponse.json();
+        const tokenExpiryMs = Date.now() + tokenData.expires_in * 1000;
         let user = await prisma.user.upsert({
             where: {
                 spotifyId: userData.id
             },
-            update: {},
+            update: {
+                spotifyaccessToken: tokenData.access_token,
+                spotifyrefreshToken: tokenData.refresh_token,
+                tokenExpiry: tokenExpiryMs,
+                userImage: userData.images?.[0]?.url ?? null,
+            },
             create: {
                 spotifyId: userData.id,
                 name: userData.display_name,
@@ -82,7 +88,7 @@ async function callback(req: Request, res: Response) {
                 userImage: userData.images?.[0]?.url ?? null,
                 spotifyaccessToken: tokenData.access_token,
                 spotifyrefreshToken: tokenData.refresh_token,
-                tokenExpiry: tokenData.expires_in
+                tokenExpiry: tokenExpiryMs
             }
         })
         const token = jwt.sign({
@@ -93,7 +99,7 @@ async function callback(req: Request, res: Response) {
         )
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'PRODUCTION',
+            secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             maxAge: 24 * 60 * 60 * 1000
         })

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 
 const Share = ({ id }: { id: string }) => {
     const [copied, setCopied] = useState(false);
-    const link = `${process.env.NEXT_PUBLIC_BASE_URL}/playlists/${id}`;
+    const link = `www.replaylist.co/playlists/${id}`;
     const [showTrackingDialog, setShowTrackingDialog] = useState(false);
 
     const copyToClipboard = async () => {

@@ -26,20 +26,21 @@ const ensureSpotifyToken = async (req: TokenRequest, res: Response, next: NextFu
                 refreshToken = refresh_token || spotifyrefreshToken;
                 tokenExpiryDate = now + expires_in * 1000;
 
-                const updateUser = await prisma.user.update({
+                tokenExpiryDate = now + expires_in * 1000;
+                await prisma.user.update({
                     where: {
                         id: user.id
                     },
                     data: {
                         spotifyaccessToken: access_token,
-                        tokenExpiry: expires_in,
-                        spotifyrefreshToken: refresh_token
+                        tokenExpiry: tokenExpiryDate,
+                        spotifyrefreshToken: refresh_token || spotifyrefreshToken
                     }
                 })
             } else {
                 accessToken = spotifyaccessToken;
                 refreshToken = spotifyrefreshToken;
-                tokenExpiryDate = now + tokenExpiry! * 1000;
+                tokenExpiryDate = tokenExpiry;
             }
 
         } else {
