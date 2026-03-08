@@ -36,7 +36,7 @@ const page = async ({ params }: { params: Params }) => {
     return (
         <UserComponent
             user={data.user}
-            playlistData={null}
+            playlistData={data.publicPlaylists?.length ? { data: data.publicPlaylists } : null}
             trackedPlaylists={data.trackedPlaylists}
             isOwner={false}
         />

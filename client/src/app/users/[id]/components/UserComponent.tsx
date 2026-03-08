@@ -21,8 +21,10 @@ type UserTypeProps = {
 const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }: UserTypeProps) => {
     const hasSpotifyProfile = Boolean(user?.spotifyId);
     const canShowPersonalPlaylists = isOwner && hasSpotifyProfile;
+    const hasPublicPlaylists = Boolean(playlistData?.data?.length);
+    const showPlaylistsTab = canShowPersonalPlaylists || hasPublicPlaylists;
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-    const [currView, setCurrView] = useState<"playlists" | "snapshots">(canShowPersonalPlaylists ? "playlists" : "snapshots");
+    const [currView, setCurrView] = useState<"playlists" | "snapshots">(showPlaylistsTab ? "playlists" : "snapshots");
     const [searchKeyword, setSearchKeyword] = useState<string>("");
 
     const playlists = playlistData?.data;
@@ -43,11 +45,13 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
     const getTrackCount = (playlist: Playlist) => playlist.trackCount ?? playlist.tracks?.total ?? 0;
     const getSnapshotCount = (playlist: Playlist) => playlist.snapshotCount ?? playlist.snapshots?.length ?? 0;
     const statsCards = [
-        ...(canShowPersonalPlaylists ? [{
+        ...(showPlaylistsTab ? [{
             key: "playlists",
             label: "Playlists",
             count: playlists?.length ?? 0,
             icon: <Music className="h-6 w-6 text-purple-300" />,
+
+
             active: currView === "playlists",
             onClick: () => setCurrView("playlists" as const),
         }] : []),
@@ -143,11 +147,11 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
                                             {card.icon}
                                         </div>
                                         <div className="space-y-2">
-                                            <div className="text-xs uppercase tracking-[0.28em] text-slate-400">
-                                                {card.label}
-                                            </div>
                                             <div className="text-3xl font-bold text-white tabular-nums">
                                                 {card.count}
+                                            </div>
+                                            <div className="text-xs uppercase tracking-[0.28em] text-slate-400">
+                                                {card.label}
                                             </div>
                                         </div>
                                         {/* <div className={`text-xs ${card.active ? "text-purple-200" : "text-slate-400"}`}>

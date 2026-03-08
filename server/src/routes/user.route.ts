@@ -8,6 +8,6 @@ const router = express.Router();
 router.get("/me", authenticate, getMe)
 router.get("/me/playlists", authenticate, ensureSpotifyToken, fetchCurrentUserPlaylists)
 router.get("/me/snapshots", authenticate, ensureSpotifyToken, fetchUserSnapshots)
-router.get("/:id", getUserById)
+router.get("/:id", ensureSpotifyToken, getUserById)
 
 export default router;

@@ -4,6 +4,7 @@ import prisma from "../lib/prisma";
 import { redis } from "../lib/redis"
 import { SPOTIFY_URL } from "../lib/config";
 import logger from "../lib/logger";
+import { fetchUserPublicPlaylists } from "../services/playlists";
 
 type PlaylistWithSnapshotCount = Record<string, unknown> & {
     _count?: {
@@ -147,7 +148,7 @@ async function fetchUserSnapshots(req: TokenRequest, res: Response) {
     }
 }
 
-async function getUserById(req: Request, res: Response) {
+async function getUserById(req: TokenRequest, res: Response) {
     const { id } = req.params;
     const cacheKey = `user:${id}`;
     const cached = await redis.get(cacheKey);
@@ -197,8 +198,16 @@ async function getUserById(req: Request, res: Response) {
             }
         });
 
+        const publicPlaylists = user.spotifyId
+            ? await fetchUserPublicPlaylists(user.spotifyId, req.access_token!).catch(e => {
+                logger.error('Failed to fetch public playlists for user:', e);
+                return [];
+            })
+            : [];
+
         const response = {
             user,
+            publicPlaylists,
             trackedPlaylists: trackedPlaylists.map((playlist: PlaylistWithSnapshotCount) => formatTrackedPlaylist(playlist))
         };
         await redis.set(cacheKey, JSON.stringify(response), "EX", 3600);

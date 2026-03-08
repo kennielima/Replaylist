@@ -30,4 +30,27 @@ async function fetchTracks(id: string, accessToken: string) {
     return data;
 }
 
-export { fetchPlaylistById, fetchTracks };
+async function fetchUserPublicPlaylists(spotifyUserId: string, accessToken: string) {
+    const res = await fetch(`${SPOTIFY_URL}/users/${spotifyUserId}/playlists?limit=50`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+    });
+    if (!res.ok) return [];
+
+    const data = await res.json();
+    return (data.items ?? [])
+        .filter((p: any) => p !== null)
+        .map((p: any) => ({
+            playlistId: p.id,
+            name: p.name,
+            description: p.description ?? '',
+            image: p.images?.[0]?.url ?? null,
+            url: p.external_urls?.spotify ?? '',
+            trackCount: p.tracks?.total ?? 0,
+            isTracked: false,
+            isTrackedBy: null,
+            isFeatured: false,
+            userId: null,
+        }));
+}
+
+export { fetchPlaylistById, fetchTracks, fetchUserPublicPlaylists };
