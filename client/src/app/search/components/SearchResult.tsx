@@ -20,7 +20,7 @@ const SearchResult = ({ searchData, query, user }: SearchTypeProps) => {
     const playlists = searchData.data;
 
     return (
-        <div className='m-12 px-20'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
             <div className='flex items-center justify-center mb-6'>
                 <SearchByQuery category="playlist" user={user} />
             </div>
@@ -66,15 +66,10 @@ const SearchResult = ({ searchData, query, user }: SearchTypeProps) => {
                                                 {playlist.name}
                                             </h3>
                                             <span className='text-xs text-slate-400'>{playlist?.tracks?.total} tracks</span>
-                                            {/* <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <MoreHorizontal className="h-4 w-4" />
-                                            </Button> */}
                                         </div>
                                         <p className="text-sm text-slate-300 mb-3 line-clamp-2">
                                             {playlist.description}
                                         </p>
-                                        <div className="flex items-center justify-between mt-2">
-                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>

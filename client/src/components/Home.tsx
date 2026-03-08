@@ -28,10 +28,6 @@ interface HomepageProps {
 const Homepage = ({ playlistData, user }: HomepageProps) => {
     const [hoveredPlaylist, setHoveredPlaylist] = useState<string | null>(null)
 
-    // const { data: allPlaylists, isLoading: playlistsLoading } = useQuery({
-    //     queryKey: ['playlists'],
-    //     queryFn: () => fetchSpotifyPlaylist(),
-    // })
     const playlists = playlistData || [];
 
     const heroVariants = {
@@ -138,7 +134,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
             </motion.section>
 
             {/* Popular Charts Section */}
-            <section className="py-20 px-6 sm:px-10 lg:px-16">
+            <section className="py-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <motion.div
                         className="text-center mb-16"
@@ -171,13 +167,6 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                                 </Card>
                             ))}
                         </div>
-                        // ) : error ? (
-                        //     <div className="text-center py-12">
-                        //         <Radio className="h-12 w-12 mx-auto text-slate-400 mb-4" />
-                        //         <h3 className="text-lg font-semibold text-white mb-2">Unable to load charts</h3>
-                        //         <p className="text-slate-300 mb-4">Please try again later</p>
-                        //         <Button variant="outline">Retry</Button>
-                        //     </div>
                     ) : (
                         <motion.div
                             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
@@ -282,9 +271,8 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
             </section>
 
             {/* CTA Section */}
-            {/* {!user && ( */}
             <motion.section
-                className="py-20 px-6 sm:px-10 lg:px-16 bg-gradient-to-r from-purple-600/20 to-purple-600/20"
+                className="py-20 bg-gradient-to-r from-purple-600/20 to-purple-600/20"
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 transition={{ duration: 0.8 }}
@@ -324,7 +312,6 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                     </motion.div>
                 </div>
             </motion.section>
-            {/* )} */}
         </div>
     )
 }

@@ -3,7 +3,7 @@ import { generateRandomString } from "../lib/utils";
 import queryString from "query-string";
 import prisma from "../lib/prisma";
 import jwt from 'jsonwebtoken';
-import { SPOTIFY_CLIENT_ID, SPOTIFY_REDIRECT_URI, SPOTIFY_AUTH_URI, TOKEN_API, SPOTIFY_CLIENT_SECRET, SPOTIFY_URL, JWT_SECRET, BASE_URL } from "../lib/config";
+import { SPOTIFY_CLIENT_ID, SPOTIFY_REDIRECT_URI, SPOTIFY_AUTH_URI, TOKEN_API, SPOTIFY_CLIENT_SECRET, SPOTIFY_URL, JWT_SECRET, BASE_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI } from "../lib/config";
 import logger from "../lib/logger";
 
 async function login(req: Request, res: Response) {
@@ -70,7 +70,7 @@ async function callback(req: Request, res: Response) {
             return res.status(400).json({ error: 'spotify_user_fetch_failed', status: userResponse.status });
         }
         const userData = await userResponse.json();
-        const tokenExpiryMs = Date.now() + tokenData.expires_in * 1000;
+        const tokenExpiryMs = Math.floor(Date.now() / 1000) + tokenData.expires_in;
         let user = await prisma.user.upsert({
             where: {
                 spotifyId: userData.id
@@ -124,4 +124,88 @@ async function logout(req: Request, res: Response) {
     }
 }
 
-export { login, callback, logout }
+async function googleLogin(req: Request, res: Response) {
+    const state = generateRandomString(16);
+    const params = queryString.stringify({
+        response_type: 'code',
+        client_id: GOOGLE_CLIENT_ID!,
+        redirect_uri: GOOGLE_REDIRECT_URI!,
+        scope: 'email profile',
+        state,
+        access_type: 'online',
+        prompt: 'select_account',
+    });
+    res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params}`);
+}
+
+async function googleCallback(req: Request, res: Response) {
+    const code = req.query.code || null;
+    const state = req.query.state || null;
+    if (state === null) return res.status(500).json({ error: 'state_mismatch' });
+    if (!code) return res.status(500).json({ error: 'no_code' });
+
+    try {
+        const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: queryString.stringify({
+                code: code as string,
+                client_id: GOOGLE_CLIENT_ID!,
+                client_secret: GOOGLE_CLIENT_SECRET!,
+                redirect_uri: GOOGLE_REDIRECT_URI!,
+                grant_type: 'authorization_code',
+            }),
+        });
+        const tokenRawText = await tokenResponse.text();
+        if (!tokenResponse.ok) {
+            logger.error(`Google token exchange failed [${tokenResponse.status}]:`, tokenRawText);
+            return res.status(400).json({ error: 'google_token_exchange_failed', details: tokenRawText });
+        }
+        let tokenData: any;
+        try { tokenData = JSON.parse(tokenRawText); }
+        catch (e) { return res.status(500).json({ error: 'invalid_google_token_response' }); }
+
+        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+            headers: { 'Authorization': `Bearer ${tokenData.access_token}` },
+        });
+        if (!userInfoRes.ok) {
+            const err = await userInfoRes.text();
+            logger.error(`Google userinfo failed [${userInfoRes.status}]: ${err}`);
+            return res.status(400).json({ error: 'google_userinfo_fetch_failed' });
+        }
+        const googleUser = await userInfoRes.json();
+
+        let user = await prisma.user.findUnique({ where: { email: googleUser.email } });
+        if (!user) {
+            user = await prisma.user.create({
+                data: {
+                    email: googleUser.email,
+                    name: googleUser.name ?? null,
+                    userImage: googleUser.picture ?? null,
+                }
+            });
+        } else if (!user.userImage || !user.name) {
+            user = await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    userImage: user.userImage ?? googleUser.picture ?? null,
+                    name: user.name ?? googleUser.name ?? null,
+                }
+            });
+        }
+
+        const token = jwt.sign({ id: user.id }, JWT_SECRET!, { expiresIn: '1d' });
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 24 * 60 * 60 * 1000,
+        });
+        res.redirect(`${BASE_URL}/spotify/callback`);
+    } catch (error) {
+        logger.error("Error during Google OAuth callback:", error);
+        return res.status(500).json({ error: "Internal server error during Google OAuth" });
+    }
+}
+
+export { login, callback, logout, googleLogin, googleCallback }

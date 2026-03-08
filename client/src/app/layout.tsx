@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Playlist Tracker",
+  title: "Replaylist",
   description: "Music-in-Time",
   icons: {
     icon: "/logo.svg",
@@ -33,9 +33,16 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-slate-900 via-purple-800 to-slate-900 text-white font-sans`}
       >
         <QueryProvider>
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-purple-600 focus:text-white">
+            Skip to main content
+          </a>
           <Header />
-          {children}
-          <div className="w-full h-8 justify-center items-center flex text-sm py-8 text-slate-300">©2025. Kennielima</div>
+          <main id="main-content">
+            {children}
+          </main>
+          <footer className="w-full h-8 justify-center items-center flex text-sm py-8 text-slate-300">
+            &copy;{new Date().getFullYear()}. Kennielima
+          </footer>
         </QueryProvider>
       </body>
     </html>

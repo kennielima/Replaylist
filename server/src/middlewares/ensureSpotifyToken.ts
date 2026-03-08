@@ -10,7 +10,7 @@ export interface TokenRequest extends Request {
 }
 
 const ensureSpotifyToken = async (req: TokenRequest, res: Response, next: NextFunction) => {
-    let now = Date.now();
+    let now = Math.floor(Date.now() / 1000);
 
     try {
         const user = req.user;
@@ -24,9 +24,7 @@ const ensureSpotifyToken = async (req: TokenRequest, res: Response, next: NextFu
                 const { access_token, refresh_token, expires_in } = await getRefreshToken(spotifyrefreshToken!);
                 accessToken = access_token;
                 refreshToken = refresh_token || spotifyrefreshToken;
-                tokenExpiryDate = now + expires_in * 1000;
-
-                tokenExpiryDate = now + expires_in * 1000;
+                tokenExpiryDate = now + expires_in;
                 await prisma.user.update({
                     where: {
                         id: user.id
@@ -46,7 +44,7 @@ const ensureSpotifyToken = async (req: TokenRequest, res: Response, next: NextFu
         } else {
             const token = await getSpotifyToken();
             accessToken = token.access_token;
-            tokenExpiryDate = now + token.expires_in * 1000;
+            tokenExpiryDate = now + token.expires_in;
         }
 
         req.access_token = accessToken;

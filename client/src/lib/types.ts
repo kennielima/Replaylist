@@ -5,7 +5,7 @@ export type User = {
     createdAt: string
     updatedAt: string
     playlists: Playlist[]
-    spotifyId: string
+    spotifyId: string | null
     spotifyaccessToken?: string
     spotifyrefreshToken?: string
     tokenExpiry: number

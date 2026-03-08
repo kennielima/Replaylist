@@ -8,10 +8,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 const HeaderComponent = ({ user }: { user: User }) => {
     return (
-        <div className='sticky top-0 z-10 w-full h-24 shadow-md flex items-center justify-between px-6 md:px-12 lg:px-22 bg-gradient-to-br from-slate-900 via-purple-800 to-slate-900'>
+        <header className='sticky top-0 z-10 w-full h-24 shadow-md flex items-center justify-between px-6 md:px-12 lg:px-22 bg-gradient-to-br from-slate-900 via-purple-800 to-slate-900 backdrop-blur-md'>
             {/* logo */}
             <Link href='/' className='flex items-center space-x-3 shrink-0'>
-                {/* <div className="p-2 bg-white/10 backdrop-blur-md rounded-lg border border-purple-500/30"> */}
                 <div className="relative p-2 bg-purple-600/20 rounded-lg border border-purple-500/30">
                     <Headphones className="h-9 w-9 text-green-400/90" />
                     <div className="absolute -top-2 -right-2 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
@@ -19,12 +18,6 @@ const HeaderComponent = ({ user }: { user: User }) => {
                     </div>
                 </div>
                 <span className="text-2xl font-bold text-green-200 hidden sm:inline">Replaylist</span>
-                {/* <div className='flex gap-1 items-center justify-between'>
-                    <div className='bg-green-400 p-3 w-fit rounded-full'>
-                        <Headphones className='w-6 h-6' />
-                    </div>
-                    <span className='font-semibold font-serif gap-0 text-sm'>Playlist <br /> Capsule</span>
-                </div> */}
             </Link>
             {user &&
                 <Link href='/users/me'>
@@ -39,7 +32,7 @@ const HeaderComponent = ({ user }: { user: User }) => {
                     <Button className='bg-purple-800 font-bold cursor-pointer text-lg' size={'lg'}>Login</Button>
                 </Link>
             )}
-        </div>
+        </header>
     )
 }
 

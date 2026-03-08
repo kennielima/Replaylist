@@ -18,3 +18,6 @@ export const JWT_SECRET = process.env.JWT_SECRET;
 export const REDIS_URL = process.env.REDIS_URL;
 export const UPSTASH_REDIS_URL = process.env.UPSTASH_REDIS_URL;
 export const SYS_ADMIN_EMAIL = process.env.SYS_ADMIN_EMAIL;
+export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+export const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;

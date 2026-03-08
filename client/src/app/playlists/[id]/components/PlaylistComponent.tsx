@@ -94,13 +94,11 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
             if (data?.snapshot) {
                 setSnapshotData(data.snapshot);
                 setSnapshotDate(formatDate(data.snapshot.createdAt));
-                // setCurrPlaylist(data.updatedPlaylist);
-                setIsTrackedBy(data.isTrackedBy);
+setIsTrackedBy(data.isTrackedBy);
             }
             // Invalidate queries to refetch snapshots list
             queryClient.invalidateQueries({ queryKey: ['snapshots', playlistId] });
         },
-        // onError: (error) => { }
     });
 
     const stopTrackerMutation = useMutation({
@@ -109,13 +107,10 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
             setIsTracking(false);
             queryClient.invalidateQueries({ queryKey: ['snapshots', playlistId] });
         },
-        // onError: (error) => { }
     });
 
     const handleTracker = () => {
-        if (playlist?.isFeatured
-            // && (currUser?.email !== playlist?.isTrackedBy)
-        ) {
+        if (playlist?.isFeatured) {
             return;
         }
         if (!currUser) {
@@ -193,14 +188,6 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                         </SelectContent>
                                     </Select>
                                 )}
-                                {/* <Button
-                                    variant="outline"
-                                    size="lg"
-                                    className="border-white/20 text-white hover:bg-white/10 bg-transparent cursor-pointer"
-                                    onClick={() => exportFn(isTracking ? snapshotTracks : snapTracks)}>
-                                    <Download className="h-4 w-4" />
-                                    Export
-                                </Button> */}
                                 <SearchByFilter
                                     placeholder="Search for track or artist..."
                                     searchKeyword={searchKeyword}
@@ -243,7 +230,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    <Play className="h-5 w-5 hover:scale-120 transition-transform duration-300 text-slate-400 hover:text-white" />
+                                                    <Play aria-label="Play on Spotify" className="h-5 w-5 hover:scale-120 transition-transform duration-300 text-slate-400 hover:text-white" />
                                                 </div>
                                             </Link>
                                         )))
@@ -257,7 +244,6 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                                 rel="noopener noreferrer"
                                             >
                                                 <div
-                                                    key={track.rank}
                                                     className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors"
                                                 >
                                                     <div className="flex items-center space-x-3">
@@ -276,7 +262,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    <Play className="h-5 w-5 hover:scale-120 transition-transform duration-300 text-slate-400 hover:text-white" />
+                                                    <Play aria-label="Play on Spotify" className="h-5 w-5 hover:scale-120 transition-transform duration-300 text-slate-400 hover:text-white" />
                                                 </div>
                                             </Link>
                                         )))}
