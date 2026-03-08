@@ -18,6 +18,7 @@ type SearchTypeProps = {
 
 const SearchResult = ({ searchData, query, user }: SearchTypeProps) => {
     const playlists = searchData.data;
+    const getTrackCount = (playlist: Playlist) => playlist.trackCount ?? playlist.tracks?.total ?? 0;
 
     return (
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
@@ -39,37 +40,45 @@ const SearchResult = ({ searchData, query, user }: SearchTypeProps) => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
-                        <Link href={`/playlists/${playlist.id}`}>
-                            <Card className="group cursor-pointer bg-white/5 backdrop-blur-md border border-white/10 shadow-xl hover:shadow-2xl hover:bg-white/10 transition-all duration-300">
-                                <CardContent className="p-0">
+                        <Link href={`/playlists/${playlist.playlistId || playlist.id}`}>
+                            <Card className="group h-full cursor-pointer overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 shadow-xl hover:shadow-2xl hover:bg-white/10 transition-all duration-300">
+                                <CardContent className="flex h-full flex-col p-0">
                                     <div className="relative overflow-hidden rounded-t-lg">
                                         <Image
                                             height={300}
                                             width={300}
                                             src={playlist.images?.[0].url || "/placeholder.svg"}
                                             alt={playlist.name}
-                                            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                                            className="h-52 w-full object-cover group-hover:scale-105 transition-transform duration-300"
                                         />
                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
                                             <Button
                                                 size="icon"
-                                                className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-purple-600 hover:bg-purple-500 text-white shadow-lg"
+                                                className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-purple-600 hover:bg-purple-500 text-white shadow-lg h-11 w-11"
                                             >
                                                 <Play className="h-5 w-5" />
                                             </Button>
                                         </div>
 
                                     </div>
-                                    <div className="p-4">
-                                        <div className="flex items-start justify-between mb-2">
-                                            <h3 className="font-semibold text-white truncate">
+                                    <div className="flex flex-1 flex-col p-5">
+                                        <div className="space-y-3">
+                                            <h3 className="min-h-14 text-lg font-semibold text-white line-clamp-2">
                                                 {playlist.name}
                                             </h3>
-                                            <span className='text-xs text-slate-400'>{playlist?.tracks?.total} tracks</span>
+                                            <p className="min-h-[4.5rem] text-sm leading-6 text-slate-300 line-clamp-3">
+                                                {playlist.description?.replace(/<[^>]+>/g, "") || "No description provided."}
+                                            </p>
                                         </div>
-                                        <p className="text-sm text-slate-300 mb-3 line-clamp-2">
-                                            {playlist.description}
-                                        </p>
+                                        <div className="mt-auto flex items-center justify-between border-t border-white/10 pt-4 text-sm">
+                                            <span className="inline-flex items-center gap-2 text-slate-300">
+                                                <Music className="h-4 w-4 text-purple-300" />
+                                                Playlist
+                                            </span>
+                                            <span className="rounded-full bg-white/8 px-3 py-1 text-xs font-semibold text-slate-200">
+                                                {getTrackCount(playlist)} tracks
+                                            </span>
+                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>

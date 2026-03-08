@@ -40,7 +40,7 @@ async function getFeaturedPlaylists(req: TokenRequest, res: Response) {
             const validated = await fetchPlaylistById(seed.id, accessToken);
             if (validated && validated.valid) {
                 const data = validated.data;
-                let featuredPlaylist = await prisma.playlist.upsert({
+                const featuredPlaylistRecord = await prisma.playlist.upsert({
                     where: {
                         playlistId: data.id,
                     },
@@ -53,8 +53,25 @@ async function getFeaturedPlaylists(req: TokenRequest, res: Response) {
                         url: data.external_urls.spotify,
                         snapshotId: data.snapshot_id,
                         ...(sysAdmin ? systemTrackingQuery : {})
+                    },
+                    include: {
+                        _count: {
+                            select: {
+                                Snapshot: true
+                            }
+                        }
                     }
                 })
+                const { _count, ...playlistFields } = featuredPlaylistRecord as typeof featuredPlaylistRecord & {
+                    _count?: {
+                        Snapshot?: number;
+                    }
+                };
+                const featuredPlaylist = {
+                    ...playlistFields,
+                    snapshotCount: _count?.Snapshot ?? 0,
+                    trackCount: data.tracks?.total ?? 0,
+                };
                 playlists.push(featuredPlaylist);
 
                 //track featured playlists automatically

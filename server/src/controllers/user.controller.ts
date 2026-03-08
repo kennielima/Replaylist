@@ -5,6 +5,27 @@ import { redis } from "../lib/redis"
 import { SPOTIFY_URL } from "../lib/config";
 import logger from "../lib/logger";
 
+type PlaylistWithSnapshotCount = Record<string, unknown> & {
+    _count?: {
+        Snapshot?: number;
+    };
+    Snapshot?: Array<{
+        _count?: {
+            tracks?: number;
+        };
+    }>;
+};
+
+function formatTrackedPlaylist(playlist: PlaylistWithSnapshotCount) {
+    const { _count, Snapshot, ...rest } = playlist;
+
+    return {
+        ...rest,
+        snapshotCount: _count?.Snapshot ?? 0,
+        trackCount: Snapshot?.[0]?._count?.tracks ?? 0,
+    };
+}
+
 async function getMe(req: Request, res: Response) {
     const user = req.user;
     try {
@@ -59,7 +80,10 @@ async function fetchCurrentUserPlaylists(req: TokenRequest, res: Response) {
                     playlistId: playlist.id,
                 }
             })
-            fetchedPlaylists.push(newPlaylist)
+            fetchedPlaylists.push({
+                ...newPlaylist,
+                trackCount: playlist.tracks?.total ?? 0,
+            })
         }
         await redis.set(cacheKey, JSON.stringify({ data: fetchedPlaylists }), "EX", 86400);
 
@@ -90,12 +114,33 @@ async function fetchUserSnapshots(req: TokenRequest, res: Response) {
                 isTrackedBy: user.id
             },
             include: {
-                Snapshot: true
+                _count: {
+                    select: {
+                        Snapshot: true,
+                    }
+                },
+                Snapshot: {
+                    orderBy: {
+                        createdAt: 'desc'
+                    },
+                    take: 1,
+                    select: {
+                        _count: {
+                            select: {
+                                tracks: true
+                            }
+                        }
+                    }
+                }
             }
         });
 
-        await redis.set(cacheKey, JSON.stringify({ playlists }), "EX", 86400);
-        return res.status(200).json({ playlists });
+        const response = {
+            playlists: playlists.map((playlist: PlaylistWithSnapshotCount) => formatTrackedPlaylist(playlist))
+        };
+
+        await redis.set(cacheKey, JSON.stringify(response), "EX", 86400);
+        return res.status(200).json(response);
     } catch (error) {
         logger.error("Error fetching user snapshot:", error);
         return res.status(500).json({ error: "Internal server error while fetching user snapshots" });
@@ -130,10 +175,32 @@ async function getUserById(req: Request, res: Response) {
 
         const trackedPlaylists = await prisma.playlist.findMany({
             where: { isTracked: true, isTrackedBy: user.id },
-            include: { Snapshot: true }
+            include: {
+                _count: {
+                    select: {
+                        Snapshot: true,
+                    }
+                },
+                Snapshot: {
+                    orderBy: {
+                        createdAt: 'desc'
+                    },
+                    take: 1,
+                    select: {
+                        _count: {
+                            select: {
+                                tracks: true
+                            }
+                        }
+                    }
+                }
+            }
         });
 
-        const response = { user, trackedPlaylists };
+        const response = {
+            user,
+            trackedPlaylists: trackedPlaylists.map((playlist: PlaylistWithSnapshotCount) => formatTrackedPlaylist(playlist))
+        };
         await redis.set(cacheKey, JSON.stringify(response), "EX", 3600);
         return res.status(200).json(response);
     } catch (error) {

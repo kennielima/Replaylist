@@ -1,6 +1,5 @@
 "use client"
 import SearchByFilter from '@/components/SearchByFilter'
-import SkeletonComponent from '@/components/SkeletonComponent'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from "@/components/ui/card"
@@ -8,7 +7,7 @@ import { Playlist, User } from '@/lib/types'
 import { containerVariants, getInitials, itemVariants } from '@/lib/utils'
 import logout from '@/services/logout'
 import { motion } from 'framer-motion'
-import { Music, Grid3X3, List, Play, User as User2 } from 'lucide-react'
+import { Compass, Grid3X3, List, Music, Play, Search, User as User2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { Fragment, useState } from 'react'
@@ -20,16 +19,47 @@ type UserTypeProps = {
     isOwner?: boolean,
 }
 const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }: UserTypeProps) => {
+    const hasSpotifyProfile = Boolean(user?.spotifyId);
+    const canShowPersonalPlaylists = isOwner && hasSpotifyProfile;
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-    const [currView, setCurrView] = useState<"playlists" | "snapshots">(isOwner ? "playlists" : "snapshots");
+    const [currView, setCurrView] = useState<"playlists" | "snapshots">(canShowPersonalPlaylists ? "playlists" : "snapshots");
     const [searchKeyword, setSearchKeyword] = useState<string>("");
 
     const playlists = playlistData?.data;
     const filteredPlaylists = playlists?.filter(playlist =>
         playlist?.name.toLowerCase().includes(searchKeyword.toLowerCase())
     );
+    const filteredTrackedPlaylists = trackedPlaylists?.filter(playlist =>
+        playlist?.name.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
 
-    const playlistsToShow = currView === "playlists" ? filteredPlaylists : trackedPlaylists;
+    const playlistsToShow = currView === "playlists" ? filteredPlaylists : filteredTrackedPlaylists;
+    const totalItemsInView = currView === "playlists" ? (playlists?.length ?? 0) : (trackedPlaylists?.length ?? 0);
+    const hasSearchKeyword = searchKeyword.trim().length > 0;
+    const hasResults = (playlistsToShow?.length ?? 0) > 0;
+    const showEmptyState = !hasResults;
+    const getDescription = (playlist: Playlist) =>
+        (playlist?.description || playlist.name).replace(/<a[^>]*>(.*?)<\/a>/g, "$1").replace(/<[^>]+>/g, "");
+    const getTrackCount = (playlist: Playlist) => playlist.trackCount ?? playlist.tracks?.total ?? 0;
+    const getSnapshotCount = (playlist: Playlist) => playlist.snapshotCount ?? playlist.snapshots?.length ?? 0;
+    const statsCards = [
+        ...(canShowPersonalPlaylists ? [{
+            key: "playlists",
+            label: "Playlists",
+            count: playlists?.length ?? 0,
+            icon: <Music className="h-6 w-6 text-purple-300" />,
+            active: currView === "playlists",
+            onClick: () => setCurrView("playlists" as const),
+        }] : []),
+        {
+            key: "tracked-playlists",
+            label: "Tracked Playlists",
+            count: trackedPlaylists?.length ?? 0,
+            icon: <Play className="h-6 w-6 text-purple-300" />,
+            active: currView === "snapshots",
+            onClick: () => setCurrView("snapshots"),
+        }
+    ];
 
     return (
         <Fragment>
@@ -60,14 +90,20 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
                                             className="w-6 h-6 rounded-lg object-cover mx-0"
                                         />
                                         <span className='text-slate-200 pl-[-4px]'>: @</span>
-                                        <Link
-                                            href={`${process.env.NEXT_PUBLIC_USER_URL}/${user?.spotifyId}`}
-                                            className="transition-all text-base text-slate-400 font-semibold hover:text-slate-300 pl-[-4px]"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            {user?.name}
-                                        </Link>
+                                        {hasSpotifyProfile ? (
+                                            <Link
+                                                href={`${process.env.NEXT_PUBLIC_USER_URL}/${user?.spotifyId}`}
+                                                className="transition-all text-base text-slate-400 font-semibold hover:text-slate-300 pl-[-4px]"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                {user?.name}
+                                            </Link>
+                                        ) : (
+                                            <span className="pl-[-4px] text-base font-semibold text-slate-500">
+                                                N/A
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -92,40 +128,35 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
                         initial="hidden"
                         animate="visible"
                     >
-                        {isOwner && (
+                        {statsCards.map((card) => (
                             <motion.div
+                                key={card.key}
                                 variants={itemVariants}
-                                onClick={() => setCurrView("playlists")}
+                                onClick={card.onClick}
                             >
-                                <Card className="bg-white/5 backdrop-blur-md border border-white/10 shadow-xl hover:scale-105 transition-transform duration-200 cursor-pointer hover:border-2">
-                                    <CardContent className="p-4 text-center">
-                                        <Music className="h-6 w-6 mx-auto mb-2 text-purple-400" />
-                                        <div className="text-2xl font-bold text-white">
-                                            {playlists?.length}
+                                <Card className={`h-full cursor-pointer border shadow-xl transition-all duration-200 hover:scale-[1.02] ${card.active
+                                    ? "border-purple-400/60 bg-white/10"
+                                    : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/8"
+                                    }`}>
+                                    <CardContent className="flex min-h-[160px] flex-col items-center justify-between p-5 text-center">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-500/15 ring-1 ring-purple-400/20">
+                                            {card.icon}
                                         </div>
-                                        <div className="text-sm text-slate-300">
-                                            Playlists
+                                        <div className="space-y-2">
+                                            <div className="text-xs uppercase tracking-[0.28em] text-slate-400">
+                                                {card.label}
+                                            </div>
+                                            <div className="text-3xl font-bold text-white tabular-nums">
+                                                {card.count}
+                                            </div>
                                         </div>
+                                        {/* <div className={`text-xs ${card.active ? "text-purple-200" : "text-slate-400"}`}>
+                                            {card.active ? "Current view" : "Open view"}
+                                        </div> */}
                                     </CardContent>
                                 </Card>
                             </motion.div>
-                        )}
-                        <motion.div
-                            variants={itemVariants}
-                            onClick={() => setCurrView("snapshots")}
-                        >
-                            <Card className="bg-white/5 backdrop-blur-md border border-white/10 shadow-xl hover:scale-105 transition-transform duration-200 cursor-pointer hover:border-2">
-                                <CardContent className="p-4 text-center">
-                                    <Music className="h-6 w-6 mx-auto mb-2 text-purple-400" />
-                                    <div className="text-2xl font-bold text-white">
-                                        {trackedPlaylists ? trackedPlaylists.length : 0}
-                                    </div>
-                                    <div className="text-sm text-slate-300">
-                                        Tracked Playlists
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
+                        ))}
                     </motion.div>
                     <motion.div
                         className="flex flex-col sm:flex-row gap-4 mb-8"
@@ -134,7 +165,7 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
                         transition={{ delay: 0.2 }}
                     >
                         <SearchByFilter
-                            placeholder="Search your playlists..."
+                            placeholder={currView === "playlists" ? "Search your playlists..." : "Search tracked playlists..."}
                             searchKeyword={searchKeyword}
                             setSearchKeyword={setSearchKeyword}
                         />
@@ -190,60 +221,60 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
                                 whileTap={{ scale: 0.98 }}
                             >
                                 <Link href={`/playlists/${playlist?.playlistId}`}>
-                                    <Card className="group cursor-pointer bg-white/5 backdrop-blur-md border border-white/10 shadow-xl hover:shadow-2xl hover:bg-white/10 transition-all duration-300">
+                                    <Card className="group h-full cursor-pointer overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 shadow-xl hover:shadow-2xl hover:bg-white/10 transition-all duration-300">
                                         <CardContent className="p-0">
                                             {viewMode === "grid" ? (
-                                                <div>
+                                                <div className="flex h-full flex-col">
                                                     <div className="relative overflow-hidden rounded-t-lg">
                                                         <Image
                                                             height={300}
                                                             width={300}
                                                             src={playlist?.image || "/placeholder.svg"}
                                                             alt={playlist.name}
-                                                            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                                                            className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-300"
                                                         />
                                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
                                                             <Button
                                                                 size="icon"
-                                                                className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-purple-600 hover:bg-purple-500 text-white shadow-lg"
+                                                                className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-purple-600 hover:bg-purple-500 text-white shadow-lg h-11 w-11"
                                                             >
                                                                 <Play className="h-5 w-5" />
                                                             </Button>
                                                         </div>
                                                     </div>
-                                                    <div className="p-4">
-                                                        <div className="flex items-center justify-between mb-2">
-                                                            <h3 className="font-semibold text-white truncate">
+                                                    <div className="flex flex-1 flex-col p-5">
+                                                        <div className="space-y-3">
+                                                            <h3 className="min-h-14 text-lg font-semibold text-white line-clamp-2">
                                                                 {playlist.name}
                                                             </h3>
+                                                            <p className="min-h-[4.5rem] text-sm leading-6 text-slate-300 line-clamp-3">
+                                                                {getDescription(playlist)}
+                                                            </p>
                                                         </div>
-                                                        <div className=''>
-                                                            {currView === "playlists" ? (
-                                                                <p className="text-sm text-slate-300 h-10 mb-3 line-clamp-2">
-                                                                    {playlist.description || playlist.name}
-                                                                </p>
-                                                            ) : (
-                                                                <p
-                                                                    className="text-sm text-slate-300 h-10 mb-4 line-clamp-2"
-                                                                    dangerouslySetInnerHTML={{
-                                                                        __html: (playlist?.description || playlist.name).replace(/<a[^>]*>(.*?)<\/a>/g, '$1')
-                                                                    }}
-                                                                />
-                                                            )}
-
-                                                            <div className="flex items-center space-x-4 text-xs text-slate-400">
+                                                        <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-white/10 pt-4 text-xs text-slate-200">
+                                                            <span className="inline-flex items-center gap-1 rounded-full bg-white/8 px-3 py-1">
                                                                 {playlist.userId !== null ? (
-                                                                    <span className="flex items-center">
-                                                                        <User2 className="h-3 w-3 mr-1" />
+                                                                    <>
+                                                                        <User2 className="h-3.5 w-3.5 text-purple-300" />
                                                                         User Playlist
-                                                                    </span>
+                                                                    </>
                                                                 ) : (
-                                                                    <span className="flex items-center">
-                                                                        <Music className="h-3 w-3 mr-1" />
+                                                                    <>
+                                                                        <Music className="h-3.5 w-3.5 text-purple-300" />
                                                                         Tracked Playlist
-                                                                    </span>
+                                                                    </>
                                                                 )}
-                                                            </div>
+                                                            </span>
+                                                            {getTrackCount(playlist) > 0 && (
+                                                                <span className="rounded-full bg-white/8 px-3 py-1">
+                                                                    {getTrackCount(playlist)} tracks
+                                                                </span>
+                                                            )}
+                                                            {currView === "snapshots" && (
+                                                                <span className="rounded-full bg-white/8 px-3 py-1">
+                                                                    {getSnapshotCount(playlist)} snapshots
+                                                                </span>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -263,16 +294,31 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
                                                             {playlist.name}
                                                         </h3>
                                                         <p className="text-sm text-slate-300 truncate">
-                                                            {playlist.description}
+                                                            {getDescription(playlist)}
                                                         </p>
-                                                        <div className="flex items-center space-x-4 mt-1 text-xs text-slate-400">
-                                                            {playlist.userId !== null && (
-                                                                <div className="flex items-center space-x-4 text-xs text-slate-400">
-                                                                    <span className="flex items-center">
-                                                                        <User2 className="h-3 w-3 mr-1" />
+                                                        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-300">
+                                                            <span className="inline-flex items-center gap-1 rounded-full bg-white/8 px-2.5 py-1">
+                                                                {playlist.userId !== null ? (
+                                                                    <>
+                                                                        <User2 className="h-3 w-3 text-purple-300" />
                                                                         User Playlist
-                                                                    </span>
-                                                                </div>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <Music className="h-3 w-3 text-purple-300" />
+                                                                        Tracked Playlist
+                                                                    </>
+                                                                )}
+                                                            </span>
+                                                            {getTrackCount(playlist) > 0 && (
+                                                                <span className="rounded-full bg-white/8 px-2.5 py-1">
+                                                                    {getTrackCount(playlist)} tracks
+                                                                </span>
+                                                            )}
+                                                            {currView === "snapshots" && (
+                                                                <span className="rounded-full bg-white/8 px-2.5 py-1">
+                                                                    {getSnapshotCount(playlist)} snapshots
+                                                                </span>
                                                             )}
                                                         </div>
                                                     </div>
@@ -291,16 +337,86 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
                         ))}
                     </motion.div>
 
-                    {playlists && playlists.length === 0 && (
+                    {showEmptyState && (
                         <motion.div
-                            className="text-center py-12"
+                            className="py-6"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                         >
-                            <Music className="h-12 w-12 mx-auto text-slate-400 mb-4" />
-                            <h3 className="text-lg font-semibold text-white mb-2">
-                                No playlists found
-                            </h3>
+                            <Card className="overflow-hidden border-white/10 bg-white/5 shadow-xl">
+                                <CardContent className="px-6 py-10 sm:px-10">
+                                    <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
+                                        <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-purple-500/15 ring-1 ring-purple-400/20">
+                                            {hasSearchKeyword || totalItemsInView > 0 ? (
+                                                <Search className="h-8 w-8 text-purple-300" />
+                                            ) : currView === "snapshots" ? (
+                                                <Play className="h-8 w-8 text-purple-300" />
+                                            ) : (
+                                                <Music className="h-8 w-8 text-purple-300" />
+                                            )}
+                                        </div>
+
+                                        <h3 className="mb-2 text-2xl font-semibold text-white">
+                                            {hasSearchKeyword || totalItemsInView > 0
+                                                ? `No ${currView === "playlists" ? "playlists" : "tracked playlists"} match "${searchKeyword}"`
+                                                : currView === "snapshots"
+                                                    ? isOwner
+                                                        ? "You are not tracking any playlists yet"
+                                                        : `${user?.name} is not tracking any playlists yet`
+                                                    : "No personal playlists available"}
+                                        </h3>
+
+                                        <p className="max-w-xl text-sm leading-6 text-slate-300 sm:text-base">
+                                            {hasSearchKeyword || totalItemsInView > 0
+                                                ? "Try a different search term or clear the filter to see the full list again."
+                                                : currView === "snapshots"
+                                                    ? isOwner
+                                                        ? "Open any playlist and start tracking it to save weekly snapshots and watch changes over time."
+                                                        : "Tracked playlists will show up here once they start saving snapshots."
+                                                    : "Your Spotify playlists will appear here after they are available in your account."}
+                                        </p>
+
+                                        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                                            {hasSearchKeyword ? (
+                                                <Button
+                                                    type="button"
+                                                    onClick={() => setSearchKeyword("")}
+                                                    className="cursor-pointer bg-white text-black hover:bg-slate-200"
+                                                >
+                                                    Clear search
+                                                </Button>
+                                            ) : currView === "snapshots" && isOwner ? (
+                                                <>
+                                                    <Link href="/">
+                                                        <Button className="cursor-pointer bg-purple-600 text-white hover:bg-purple-500">
+                                                            <Compass className="h-4 w-4" />
+                                                            Explore playlists
+                                                        </Button>
+                                                    </Link>
+                                                    {canShowPersonalPlaylists && (
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            className="cursor-pointer border-white/15 bg-white/5 text-white hover:bg-white/10"
+                                                            onClick={() => setCurrView("playlists")}
+                                                        >
+                                                            <Music className="h-4 w-4" />
+                                                            View my playlists
+                                                        </Button>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <Link href="/">
+                                                    <Button className="cursor-pointer bg-purple-600 text-white hover:bg-purple-500">
+                                                        <Compass className="h-4 w-4" />
+                                                        Browse charts
+                                                    </Button>
+                                                </Link>
+                                            )}
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
                         </motion.div>
                     )}
                 </div>
