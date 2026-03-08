@@ -126,7 +126,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                             <div className="text-slate-300">Playlists Tracked</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-3xl md:text-4xl font-bold text-white mb-2">10+</div>
+                            <div className="text-3xl md:text-4xl font-bold text-white mb-2">5+</div>
                             <div className="text-slate-300">Active Users</div>
                         </div>
                         <div className="text-center">
