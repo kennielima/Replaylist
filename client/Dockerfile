@@ -1,3 +1,13 @@
+FROM node:22-slim AS dev
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+ARG API_URL=http://server:4001
+ENV API_URL=${API_URL}
+COPY . .
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
+
 FROM node:22-slim AS builder
 
 WORKDIR /app

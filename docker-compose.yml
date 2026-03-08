@@ -21,19 +21,9 @@ services:
     ports:
       - "4001:4001"
     container_name: charts_tracker-server-1
-    volumes:
-      # - ./server/node_modules:/server/node_modules
-      - ./server:/app/server
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
-    develop:
-      watch:
-        - action: rebuild
-          path: ./app
-          target: ./server
-          ignore:
-            - /server/node_modules/
     restart: unless-stopped
     depends_on:
       redis:
@@ -42,7 +32,7 @@ services:
         condition: service_started
     env_file:
       - ./server/.env
-  
+
   client:
     build:
       context: ./client
@@ -56,13 +46,6 @@ services:
       - API_URL=http://server:4001
     depends_on:
       - server
-    develop:
-      watch:
-        - action: rebuild
-          path: ./app
-          target: ./app
-          ignore:
-            - /server/node_modules/
     restart: unless-stopped
     env_file:
       - ./client/.env.local

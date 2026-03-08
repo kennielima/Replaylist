@@ -1,3 +1,13 @@
+FROM node:18-alpine AS dev
+WORKDIR /app
+COPY package.json ./
+COPY prisma ./prisma
+RUN npm install
+RUN npm run prisma:generate
+COPY . .
+EXPOSE 4001
+CMD ["npm", "run", "dev"]
+
 FROM node:18-alpine AS builder
 
 WORKDIR /app
