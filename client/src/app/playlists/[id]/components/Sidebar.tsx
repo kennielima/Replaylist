@@ -11,17 +11,22 @@ interface SidebarProps {
         tracks: Track[]
     },
     tracks: Track[],
-    playlistsData: Playlist[],
     allSnapshotsData: { data: Snapshot[] },
     userId: string | null,
     trackerUser: User | null,
 }
+interface SimilarProps {
+    playlistData: {
+        data: Playlist;
+        tracks: Track[]
+    },
+    playlistsData: Playlist[]
+}
 
-const Sidebar = ({ playlistsData, playlistData, tracks, allSnapshotsData, userId, trackerUser }: SidebarProps) => {
+export const Stats = ({ playlistData, tracks, allSnapshotsData, userId, trackerUser }: SidebarProps) => {
     const currPlaylist = playlistData.data;
-
     return (
-        <div className="space-y-6">
+        <div>
             <Card className="bg-white/5 backdrop-blur-md border border-white/10 py-6">
                 <CardHeader>
                     <CardTitle className="text-white text-lg">Playlist Stats</CardTitle>
@@ -46,7 +51,7 @@ const Sidebar = ({ playlistsData, playlistData, tracks, allSnapshotsData, userId
                             <span className="text-white font-medium">{currPlaylist?.trackingStartDate && formatDate(currPlaylist?.trackingStartDate)}</span>
                         </div>
                     )}
-                    {trackerUser && (
+                    {trackerUser && playlistData?.data?.isTracked && (
                         <div className="flex justify-between items-center">
                             <span className="text-slate-400">Tracked by</span>
                             <Link href={`/users/${trackerUser.id}`} className="flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium text-sm transition-colors">
@@ -57,11 +62,19 @@ const Sidebar = ({ playlistsData, playlistData, tracks, allSnapshotsData, userId
                     )}
                 </CardContent>
             </Card>
+        </div>
+    )
+}
 
+export const Similar = ({ playlistsData, playlistData }: SimilarProps) => {
+    const currPlaylist = playlistData.data;
+
+    return (
+        <div>
             {/* Similar Playlists */}
             <Card className="bg-white/5 backdrop-blur-md border border-white/10 py-8">
                 <CardHeader>
-                    <CardTitle className="text-white text-lg">Similar Playlists</CardTitle>
+                    <CardTitle className="text-white text-lg">Featured Playlists</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {playlistsData.map((playlist: Playlist, index: number) => (
@@ -83,5 +96,3 @@ const Sidebar = ({ playlistsData, playlistData, tracks, allSnapshotsData, userId
         </div>
     )
 }
-
-export default Sidebar

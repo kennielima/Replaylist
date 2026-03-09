@@ -18,7 +18,7 @@ const ensureSpotifyToken = async (req: TokenRequest, res: Response, next: NextFu
         let accessToken;
         let refreshToken;
 
-        if (user) {
+        if (user?.spotifyrefreshToken) {
             const { spotifyaccessToken, tokenExpiry, spotifyrefreshToken } = user;
             if (!spotifyaccessToken || !tokenExpiry || now >= tokenExpiry) {
                 const { access_token, refresh_token, expires_in } = await getRefreshToken(spotifyrefreshToken!);
@@ -40,7 +40,6 @@ const ensureSpotifyToken = async (req: TokenRequest, res: Response, next: NextFu
                 refreshToken = spotifyrefreshToken;
                 tokenExpiryDate = tokenExpiry;
             }
-
         } else {
             const token = await getSpotifyToken();
             accessToken = token.access_token;

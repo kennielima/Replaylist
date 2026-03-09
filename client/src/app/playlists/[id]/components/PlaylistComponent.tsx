@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getSnapshots, getSnapshotById } from "@/services/getSnapshots"
-import Sidebar from "./Sidebar"
+import { Similar, Stats } from "./Sidebar"
 import PlaylistHeader from "./Header"
 import SearchByFilter from "../../../../components/SearchByFilter"
 import Link from "next/link"
@@ -94,7 +94,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
             if (data?.snapshot) {
                 setSnapshotData(data.snapshot);
                 setSnapshotDate(formatDate(data.snapshot.createdAt));
-setIsTrackedBy(data.isTrackedBy);
+                setIsTrackedBy(data.isTrackedBy);
             }
             // Invalidate queries to refetch snapshots list
             queryClient.invalidateQueries({ queryKey: ['snapshots', playlistId] });
@@ -167,6 +167,15 @@ setIsTrackedBy(data.isTrackedBy);
 
                     {/* Content */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div className="grid lg:hidden">
+                            <Stats
+                                playlistData={playlistData}
+                                tracks={tracks}
+                                allSnapshotsData={allSnapshotsData}
+                                userId={currUser?.id}
+                                trackerUser={trackerUser}
+                            />
+                        </div>
                         <div className="lg:col-span-2 space-y-8">
                             <div className={`flex items-center space-x-5 justify-between w-full ${(!isTracking && !allSnapshotsData) && "flex-row-reverse gap-4"}`}>
                                 {((isTracking || snapshotData) && (currUser?.id === isTrackedBy) || playlist?.isFeatured) && (
@@ -269,15 +278,21 @@ setIsTrackedBy(data.isTrackedBy);
                                 </CardContent>
                             </Card>
                         </div>
-
-                        <Sidebar
-                            playlistsData={playlistsData}
-                            playlistData={playlistData}
-                            tracks={tracks}
-                            allSnapshotsData={allSnapshotsData}
-                            userId={currUser?.id}
-                            trackerUser={trackerUser}
-                        />
+                        <div className="space-y-6">
+                            <div className="hidden lg:grid">
+                                <Stats
+                                    playlistData={playlistData}
+                                    tracks={tracks}
+                                    allSnapshotsData={allSnapshotsData}
+                                    userId={currUser?.id}
+                                    trackerUser={trackerUser}
+                                />
+                            </div>
+                            <Similar
+                                playlistsData={playlistsData}
+                                playlistData={playlistData}
+                            />
+                        </div>
                     </div>
                 </div>
             )

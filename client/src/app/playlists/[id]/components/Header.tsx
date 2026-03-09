@@ -50,7 +50,7 @@ const PlaylistHeader = ({
                 <Image
                     height={600}
                     width={600}
-                    src={playlist?.image || "/placeholder.svg"}
+                    src={playlist?.image || "/icon.png"}
                     alt={playlist?.name || 'playlistimg'}
                     className="w-80 h-80 object-cover rounded-lg shadow-2xl"
                 />
@@ -97,7 +97,7 @@ const PlaylistHeader = ({
                         <Button
                             size="lg"
                             className="bg-purple-600 hover:bg-purple-500 text-white px-8 cursor-pointer"
-                            onClick={() => window.open(playlist?.url, "_blank")}
+                            onClick={() => window.open(playlist?.url || `https://open.spotify.com/playlist/${playlist?.id}`, "_blank")}
                         >
                             <Play className="h-5 w-5" />
                             Play on Spotify
@@ -166,10 +166,8 @@ const PlaylistHeader = ({
                                 variant="outline"
                                 size="lg"
                                 onClick={handleTracker}
-                                disabled={stopIsPending}
-                                className={`${(playlist?.isFeatured
-                                    //  && isTrackedBy !== currUser?.id
-                                ) ? "hover:cursor-not-allowed" : "hover:bg-red-500/30"} flex items-center gap-2 px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-200 bg-red-500/20 text-red-400 border border-red-500/30`}
+                                disabled={stopIsPending || !!playlist?.isFeatured}
+                                className={`${!playlist?.isFeatured && "hover:bg-red-500/30"} flex items-center gap-2 px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-200 bg-red-500/20 text-red-400 border border-red-500/30`}
                             >
                                 {stopIsPending ? (
                                     <p className="flex items-center gap-1">

@@ -117,7 +117,7 @@ async function fetchUserSnapshots(req: TokenRequest, res: Response) {
             include: {
                 _count: {
                     select: {
-                        Snapshot: true,
+                        Snapshot: { where: { userId: user.id } },
                     }
                 },
                 Snapshot: {
@@ -179,7 +179,7 @@ async function getUserById(req: TokenRequest, res: Response) {
             include: {
                 _count: {
                     select: {
-                        Snapshot: true,
+                        Snapshot: { where: { userId: user.id } },
                     }
                 },
                 Snapshot: {

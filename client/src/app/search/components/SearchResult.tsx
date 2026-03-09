@@ -47,7 +47,7 @@ const SearchResult = ({ searchData, query, user }: SearchTypeProps) => {
                                         <Image
                                             height={300}
                                             width={300}
-                                            src={playlist.images?.[0].url || "/placeholder.svg"}
+                                            src={playlist.images?.[0].url || "/icon.png"}
                                             alt={playlist.name}
                                             className="h-52 w-full object-cover group-hover:scale-105 transition-transform duration-300"
                                         />

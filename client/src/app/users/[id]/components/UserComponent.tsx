@@ -274,7 +274,7 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
                                                                     {getTrackCount(playlist)} tracks
                                                                 </span>
                                                             )}
-                                                            {currView === "snapshots" && (
+                                                            {currView === "snapshots" && (playlist.isFeatured || getSnapshotCount(playlist) > 0) && (
                                                                 <span className="rounded-full bg-white/8 px-3 py-1">
                                                                     {getSnapshotCount(playlist)} snapshots
                                                                 </span>
@@ -288,7 +288,7 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
                                                         <Image
                                                             height={300}
                                                             width={300}
-                                                            src={playlist.image || "/placeholder.svg"}
+                                                            src={playlist.image || "/icon.png"}
                                                             alt={playlist.name}
                                                             className="w-16 h-16 rounded-lg object-cover"
                                                         />
@@ -319,7 +319,7 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
                                                                     {getTrackCount(playlist)} tracks
                                                                 </span>
                                                             )}
-                                                            {currView === "snapshots" && (
+                                                            {currView === "snapshots" && (playlist.isFeatured || getSnapshotCount(playlist) > 0) && (
                                                                 <span className="rounded-full bg-white/8 px-2.5 py-1">
                                                                     {getSnapshotCount(playlist)} snapshots
                                                                 </span>
