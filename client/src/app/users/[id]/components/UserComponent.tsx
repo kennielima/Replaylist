@@ -216,118 +216,111 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
                         initial="hidden"
                         animate="visible"
                     >
-                        {playlistsToShow?.map((playlist: Playlist, index: number) => (
-                            <motion.div
-                                key={index}
-                                variants={itemVariants}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                            >
-                                <Link href={`/playlists/${playlist?.playlistId}`}>
-                                    <Card className="group h-full cursor-pointer overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 shadow-xl hover:shadow-2xl hover:bg-white/10 transition-all duration-300">
-                                        <CardContent className="p-0">
-                                            {viewMode === "grid" ? (
-                                                <div className="flex h-full flex-col">
-                                                    <div className="relative overflow-hidden rounded-t-lg">
-                                                        <Image
-                                                            height={300}
-                                                            width={300}
-                                                            src={playlist?.image || "/placeholder.svg"}
-                                                            alt={playlist.name}
-                                                            className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-300"
-                                                        />
-                                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-                                                            <Button
-                                                                size="icon"
-                                                                className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-purple-600 hover:bg-purple-500 text-white shadow-lg h-11 w-11"
-                                                            >
-                                                                <Play className="h-5 w-5" />
+                        {playlistsToShow?.map((playlist: Playlist, index: number) => {
+                            const badgeLabel = playlist.isFeatured
+                                ? "Featured Chart"
+                                : currView === "snapshots"
+                                    ? "Tracked Playlist"
+                                    : "User Playlist";
+                            const badgeIcon = playlist.isFeatured || currView === "snapshots"
+                                ? <Music className="h-3.5 w-3.5 text-purple-300" />
+                                : <User2 className="h-3.5 w-3.5 text-purple-300" />;
+
+                            return (
+                                <motion.div
+                                    key={index}
+                                    variants={itemVariants}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    <Link href={`/playlists/${playlist?.playlistId}`}>
+                                        <Card className="group h-full cursor-pointer overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 shadow-xl hover:shadow-2xl hover:bg-white/10 transition-all duration-300">
+                                            <CardContent className="p-0">
+                                                {viewMode === "grid" ? (
+                                                    <div className="flex h-full flex-col">
+                                                        <div className="relative overflow-hidden rounded-t-lg">
+                                                            <Image
+                                                                height={300}
+                                                                width={300}
+                                                                src={playlist?.image || "/placeholder.svg"}
+                                                                alt={playlist.name}
+                                                                className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-300"
+                                                            />
+                                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                                                                <Button
+                                                                    size="icon"
+                                                                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-purple-600 hover:bg-purple-500 text-white shadow-lg h-11 w-11"
+                                                                >
+                                                                    <Play className="h-5 w-5" />
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex flex-1 flex-col p-5">
+                                                            <div className="space-y-3">
+                                                                <h3 className="min-h-14 text-lg font-semibold text-white line-clamp-2">
+                                                                    {playlist.name}
+                                                                </h3>
+                                                                <p className="min-h-[4.5rem] text-sm leading-6 text-slate-300 line-clamp-3">
+                                                                    {getDescription(playlist)}
+                                                                </p>
+                                                            </div>
+                                                            <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-white/10 pt-4 text-xs text-slate-200">
+                                                                <span className="inline-flex items-center gap-1 rounded-full bg-white/8 px-3 py-1">
+                                                                    {badgeIcon}
+                                                                    {badgeLabel}
+                                                                </span>
+                                                                {getTrackCount(playlist) > 0 && (
+                                                                    <span className="rounded-full bg-white/8 px-3 py-1">
+                                                                        {getTrackCount(playlist)} tracks
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center p-4 space-x-4">
+                                                        <div className="relative">
+                                                            <Image
+                                                                height={300}
+                                                                width={300}
+                                                                src={playlist.image || "/icon.png"}
+                                                                alt={playlist.name}
+                                                                className="w-16 h-16 rounded-lg object-cover"
+                                                            />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <h3 className="font-semibold text-white truncate">
+                                                                {playlist.name}
+                                                            </h3>
+                                                            <p className="text-sm text-slate-300 truncate">
+                                                                {getDescription(playlist)}
+                                                            </p>
+                                                            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-300">
+                                                                <span className="inline-flex items-center gap-1 rounded-full bg-white/8 px-2.5 py-1">
+                                                                    {badgeIcon}
+                                                                    {badgeLabel}
+                                                                </span>
+                                                                {getTrackCount(playlist) > 0 && (
+                                                                    <span className="rounded-full bg-white/8 px-2.5 py-1">
+                                                                        {getTrackCount(playlist)} tracks
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center space-x-2">
+                                                            <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="View playlist">
+                                                                <Play className="h-4 w-4 group-hover:scale-110 transition-transform duration-300 hover:text-white" />
                                                             </Button>
                                                         </div>
                                                     </div>
-                                                    <div className="flex flex-1 flex-col p-5">
-                                                        <div className="space-y-3">
-                                                            <h3 className="min-h-14 text-lg font-semibold text-white line-clamp-2">
-                                                                {playlist.name}
-                                                            </h3>
-                                                            <p className="min-h-[4.5rem] text-sm leading-6 text-slate-300 line-clamp-3">
-                                                                {getDescription(playlist)}
-                                                            </p>
-                                                        </div>
-                                                        <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-white/10 pt-4 text-xs text-slate-200">
-                                                            <span className="inline-flex items-center gap-1 rounded-full bg-white/8 px-3 py-1">
-                                                                {playlist.userId !== null ? (
-                                                                    <>
-                                                                        <User2 className="h-3.5 w-3.5 text-purple-300" />
-                                                                        User Playlist
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        <Music className="h-3.5 w-3.5 text-purple-300" />
-                                                                        Tracked Playlist
-                                                                    </>
-                                                                )}
-                                                            </span>
-                                                            {getTrackCount(playlist) > 0 && (
-                                                                <span className="rounded-full bg-white/8 px-3 py-1">
-                                                                    {getTrackCount(playlist)} tracks
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center p-4 space-x-4">
-                                                    <div className="relative">
-                                                        <Image
-                                                            height={300}
-                                                            width={300}
-                                                            src={playlist.image || "/icon.png"}
-                                                            alt={playlist.name}
-                                                            className="w-16 h-16 rounded-lg object-cover"
-                                                        />
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <h3 className="font-semibold text-white truncate">
-                                                            {playlist.name}
-                                                        </h3>
-                                                        <p className="text-sm text-slate-300 truncate">
-                                                            {getDescription(playlist)}
-                                                        </p>
-                                                        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-300">
-                                                            <span className="inline-flex items-center gap-1 rounded-full bg-white/8 px-2.5 py-1">
-                                                                {playlist.userId !== null ? (
-                                                                    <>
-                                                                        <User2 className="h-3 w-3 text-purple-300" />
-                                                                        User Playlist
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        <Music className="h-3 w-3 text-purple-300" />
-                                                                        Tracked Playlist
-                                                                    </>
-                                                                )}
-                                                            </span>
-                                                            {getTrackCount(playlist) > 0 && (
-                                                                <span className="rounded-full bg-white/8 px-2.5 py-1">
-                                                                    {getTrackCount(playlist)} tracks
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex items-center space-x-2">
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="View playlist">
-                                                            <Play className="h-4 w-4 group-hover:scale-110 transition-transform duration-300 hover:text-white" />
-                                                        </Button>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </CardContent>
-                                    </Card>
-                                </Link>
+                                                )}
+                                            </CardContent>
+                                        </Card>
+                                    </Link>
 
-                            </motion.div>
-                        ))}
+                                </motion.div>
+                            );
+                        })}
                     </motion.div>
 
                     {showEmptyState && (
