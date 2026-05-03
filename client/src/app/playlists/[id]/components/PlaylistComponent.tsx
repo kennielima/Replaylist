@@ -1,5 +1,5 @@
 "use client"
-import { Fragment, useEffect, useMemo, useState } from "react"
+import { Fragment, useEffect, useMemo, useRef, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
     Play,
@@ -183,6 +183,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
     }, [snapshotTracks, prevRankMap, previousSnapshot]);
 
     const showOverflowHint = mySnapshots.length > 5;
+    const snapshotScrollRef = useRef<HTMLDivElement>(null);
 
     return (
         <Fragment>
@@ -239,7 +240,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                     </div>
 
                                     <div className="relative">
-                                        <div className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden">
+                                        <div ref={snapshotScrollRef} className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden">
                                             {mySnapshots.map((snapshot: Snapshot) => (
                                                 <button
                                                     key={snapshot.id}
@@ -254,9 +255,12 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                             ))}
                                         </div>
                                         {showOverflowHint && (
-                                            <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-10 bg-gradient-to-l from-[#0d1321] to-transparent flex items-center justify-end">
-                                                <ChevronRight className="h-3.5 w-3.5 text-slate-500" />
-                                            </div>
+                                            <button
+                                                onClick={() => snapshotScrollRef.current?.scrollBy({ left: 120, behavior: 'smooth' })}
+                                                className="absolute right-0 top-0 bottom-1 w-10 bg-gradient-to-l from-[#070f1e] to-transparent flex items-center justify-end cursor-pointer"
+                                            >
+                                                <ChevronRight className="h-4 w-4 text-slate-500" />
+                                            </button>
                                         )}
                                     </div>
                                 </div>
