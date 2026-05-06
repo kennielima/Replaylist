@@ -6,6 +6,7 @@ import {
     Music,
     History,
     ChevronRight,
+    ChevronLeft,
 } from "lucide-react"
 import { Playlist, Snapshot, SnapshotTrack, Track, User } from "@/lib/types"
 import { formatDate } from "@/lib/utils"
@@ -184,6 +185,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
 
     const showOverflowHint = mySnapshots.length > 5;
     const snapshotScrollRef = useRef<HTMLDivElement>(null);
+    const [snapshotScrollLeft, setSnapshotScrollLeft] = useState(0);
 
     return (
         <Fragment>
@@ -240,7 +242,11 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                     </div>
 
                                     <div className="relative">
-                                        <div ref={snapshotScrollRef} className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden">
+                                        <div
+                                            ref={snapshotScrollRef}
+                                            onScroll={(e) => setSnapshotScrollLeft(e.currentTarget.scrollLeft)}
+                                            className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
+                                        >
                                             {mySnapshots.map((snapshot: Snapshot) => (
                                                 <button
                                                     key={snapshot.id}
@@ -254,12 +260,20 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                                 </button>
                                             ))}
                                         </div>
+                                        {showOverflowHint && snapshotScrollLeft > 0 && (
+                                            <button
+                                                onClick={() => snapshotScrollRef.current?.scrollBy({ left: -120, behavior: 'smooth' })}
+                                                className="group absolute left-0 top-0 bottom-1 w-10 bg-gradient-to-r from-[#040811] to-transparent flex items-center justify-start cursor-pointer"
+                                            >
+                                                <ChevronLeft className="h-3.5 w-3.5 text-slate-200 transition-all group-hover:text-white group-hover:scale-110" />
+                                            </button>
+                                        )}
                                         {showOverflowHint && (
                                             <button
                                                 onClick={() => snapshotScrollRef.current?.scrollBy({ left: 120, behavior: 'smooth' })}
-                                                className="absolute right-0 top-0 bottom-1 w-10 bg-gradient-to-l from-[#070f1e] to-transparent flex items-center justify-end cursor-pointer"
+                                                className="group absolute right-0 top-0 bottom-1 w-10 bg-gradient-to-l from-[#040811] to-transparent flex items-center justify-end cursor-pointer"
                                             >
-                                                <ChevronRight className="h-4 w-4 text-slate-500" />
+                                                <ChevronRight className="h-3.5 w-3.5 text-slate-200 transition-all group-hover:text-white group-hover:scale-110" />
                                             </button>
                                         )}
                                     </div>
