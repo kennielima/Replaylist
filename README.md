@@ -11,6 +11,29 @@
 - **Featured playlists** — Explore curated playlists from popular music charts.
 - **Multi-auth** — Sign in with Spotify or Google.
 
+## How it works
+
+```mermaid
+flowchart TD
+    A([User visits Replaylist]) --> B{Signed in?}
+
+    B -- No --> C[Sign in with Spotify or Google]
+    C --> B
+
+    B -- Yes --> D[Browse featured playlists\nor search Spotify]
+    D --> E[Select a playlist]
+    E --> F[Start tracking]
+
+    F --> G[Replaylist takes first snapshot]
+    G --> H{{"System: auto-snapshot\nevery 7 days"}}
+
+    H --> I[User revisits playlist]
+    I --> J[Browse snapshot history]
+    J --> K[See which tracks were added,\nremoved, or shifted in ranking]
+
+    F --> L[Stop tracking anytime]
+```
+
 ## Stack
 
 | Layer         | Technology                                                   |
