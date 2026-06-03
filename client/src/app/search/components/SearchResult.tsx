@@ -4,10 +4,12 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Playlist } from '@/lib/types'
 import { containerVariants, itemVariants } from '@/lib/utils'
 import { motion } from 'framer-motion'
-import { AlertTriangle, Music, Play } from 'lucide-react'
+import { AlertTriangle, ChevronLeft, ChevronRight, Music } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
+
+const PAGE_SIZE = 12;
 
 type SearchTypeProps = {
     searchData: { data: Playlist[] },
@@ -16,6 +18,9 @@ type SearchTypeProps = {
 
 const SearchResult = ({ searchData, query }: SearchTypeProps) => {
     const playlists = searchData.data;
+    const [page, setPage] = useState(1);
+    const totalPages = Math.ceil(playlists.length / PAGE_SIZE);
+    const paginated = playlists.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
     const getTrackCount = (playlist: Playlist) => playlist.trackCount ?? playlist.tracks?.total ?? 0;
     return (
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
@@ -40,7 +45,7 @@ const SearchResult = ({ searchData, query }: SearchTypeProps) => {
                 initial="hidden"
                 animate="visible"
             >
-                {playlists.map((playlist: Playlist) => (
+                {paginated.map((playlist: Playlist) => (
                     <motion.div
                         key={playlist.id}
                         variants={itemVariants}
@@ -85,6 +90,35 @@ const SearchResult = ({ searchData, query }: SearchTypeProps) => {
                     </motion.div>
                 ))}
             </motion.div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-3 mt-10">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        className="border-white/10 bg-white/5 hover:bg-white/10 text-white disabled:opacity-30"
+                    >
+                        <ChevronLeft className="h-4 w-4" />
+                        Prev
+                    </Button>
+                    <span className="text-sm text-slate-400">
+                        Page <b className="text-white">{page}</b> of <b className="text-white">{totalPages}</b>
+                    </span>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
+                        className="border-white/10 bg-white/5 hover:bg-white/10 text-white disabled:opacity-30"
+                    >
+                        Next
+                        <ChevronRight className="h-4 w-4" />
+                    </Button>
+                </div>
+            )}
 
             {/* Empty State */}
             {playlists.length === 0 && (
