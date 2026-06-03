@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Replaylist",
+  title: "Replaylist: Spotify Playlist History Tracker",
   description: "Playlist-in-Time",
   icons: {
     icon: "/logo.svg",
