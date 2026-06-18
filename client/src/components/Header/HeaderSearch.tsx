@@ -39,7 +39,7 @@ const HeaderSearch = () => {
                         onChange={e => setQuery(e.target.value)}
                         onKeyDown={onKeyDown}
                         onBlur={e => { if (!e.currentTarget.form?.contains(e.relatedTarget)) close() }}
-                        placeholder="Search playlists..."
+                        placeholder="Explore playlists..."
                         className="h-8 w-48 rounded-md bg-white/10 border border-white/15 px-3 text-sm text-white placeholder:text-slate-500 outline-none focus:border-purple-400/60 transition-all"
                     />
                     <button type="button" onClick={close} className="text-slate-400 hover:text-slate-200 transition-colors">

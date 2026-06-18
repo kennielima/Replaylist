@@ -17,7 +17,7 @@ const SearchByQuery = ({ category }: { category: string }) => {
     }
     let placeholder;
     if (category === 'playlist') {
-        placeholder = "Search playlist by name or link"
+        placeholder = "Explore playlist by name or link"
     } else if (category === 'track') {
         placeholder = "Search for any track"
     }
@@ -40,7 +40,7 @@ const SearchByQuery = ({ category }: { category: string }) => {
                 type="submit"
                 // variant="outline"
                 className={`${category === 'playlist' && "h-12"} 
-                    ${category === 'track' && "h-10"} bg-purple-400 hover:bg-purple-300 text-black cursor-pointer`}
+                    ${category === 'track' && "h-10"} bg-purple-400 hover:bg-purple-300 font-semibold text-black cursor-pointer`}
             >
                 Search
             </Button>

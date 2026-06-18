@@ -104,36 +104,6 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                 </div>
             </motion.div>
 
-            {/* Stats Section */}
-            <motion.section
-                className="py-16 border-y border-white/5"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-            >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-slate-300">
-                        <div className="text-center">
-                            <div className="text-3xl md:text-4xl font-bold mb-2">5+</div>
-                            <div className="">Popular Charts</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-3xl md:text-4xl font-bold mb-2">10+</div>
-                            <div className="">Playlists Tracked</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-3xl md:text-4xl font-bold mb-2">5+</div>
-                            <div className="">Active Users</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-3xl md:text-4xl font-bold mb-2">24/7</div>
-                            <div className="">Live Updates</div>
-                        </div>
-                    </div>
-                </div>
-            </motion.section>
-
             {/* Popular Charts Section */}
             <section className="py-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -149,7 +119,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                             <h2 className="text-3xl md:text-4xl font-bold text-white">Popular Charts</h2>
                         </div>
                         <p className="text-base md:text-xl text-slate-300 max-w-2xl mx-auto">
-                            Explore the most trending playlists and their evolution in time.
+                            Explore the most trending charts and their evolution in time.
                         </p>
                     </motion.div>
 
@@ -246,7 +216,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                             ))}
                         </motion.div>
                     )}
-                    {playlists && playlists.length > 6 && (
+                    {playlists && playlists.length > 10 && (
                         <motion.div
                             className="text-center mt-12"
                             initial={{ opacity: 0 }}
@@ -266,6 +236,37 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                     )}
                 </div>
             </section>
+
+
+            {/* Stats Section */}
+            <motion.section
+                className="py-16 border-y border-white/5"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+            >
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-slate-300">
+                        <div className="text-center">
+                            <div className="text-3xl md:text-4xl font-bold mb-2">8</div>
+                            <div className="">Popular Charts</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-3xl md:text-4xl font-bold mb-2">20+</div>
+                            <div className="">Playlists Tracked</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-3xl md:text-4xl font-bold mb-2">5+</div>
+                            <div className="">Active Users</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-3xl md:text-4xl font-bold mb-2">24/7</div>
+                            <div className="">Live Updates</div>
+                        </div>
+                    </div>
+                </div>
+            </motion.section>
 
             {/* CTA Section */}
             <motion.section
@@ -292,7 +293,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                         transition={{ duration: 0.6, delay: 0.1 }}
                         viewport={{ once: true }}
                     >
-                        Join other music lovers tracking their favorite playlists and discovering new trends
+                        Join other music lovers and start saving snapshots of your favorite playlists now
                     </motion.p>
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -303,7 +304,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                         <Link href={!user ? '/login' : '/users/me'}>
                             <Button size="lg" className="cursor-pointer bg-purple-400 hover:bg-purple-300 text-black px-8 py-3">
                                 <Music className="mr-2 h-5 w-5" />
-                                Start Tracking Now
+                                Start Tracking
                             </Button>
                         </Link>
                     </motion.div>

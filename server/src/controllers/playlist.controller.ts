@@ -11,7 +11,8 @@ import { getSysAdmin } from "../services/sysAdmin";
 
 async function getFeaturedPlaylists(req: TokenRequest, res: Response) {
     const accessToken = req.access_token;
-    const cacheKey = `featured-playlists`;
+    const seedKey = featuredPlaylists.map(p => p.id).join(',');
+    const cacheKey = `featured-playlists:${seedKey}`;
     const cached = await redis.get(cacheKey);
 
     try {

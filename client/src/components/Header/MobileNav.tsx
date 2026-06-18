@@ -42,7 +42,7 @@ const MobileNav = ({ user }: { user: User }) => {
                             ref={inputRef}
                             value={query}
                             onChange={e => setQuery(e.target.value)}
-                            placeholder="Search playlists..."
+                            placeholder="Explore playlists..."
                             className="flex-1 bg-transparent text-base text-white placeholder:text-slate-500 outline-none border-b border-white/10 pb-1"
                         />
                     </form>

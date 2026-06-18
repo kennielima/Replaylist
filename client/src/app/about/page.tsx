@@ -25,7 +25,7 @@ export default function AboutPage() {
                 variants={heroVariants}
             >
                 <div className="absolute inset-0 border-b border-white/5" />
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-10 lg:px-12 py-16 lg:py-24">
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-10 lg:px-12 pt-6 lg:pt-12 pb-16 lg:pb-24">
                     <div className="text-center">
                         <motion.div
                             initial={{ scale: 0.8, opacity: 0 }}
@@ -34,20 +34,89 @@ export default function AboutPage() {
                             className="flex justify-center mb-6"
                         >
                             <div className="relative p-4 bg-purple-600/20 rounded-2xl border border-purple-400/30">
-                                <Headphones className="h-12 w-12 text-purple-300" />
+                                <Headphones className="h-10 w-10 text-purple-300" />
                                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-purple-400 rounded-full flex items-center justify-center">
                                     <Play className="w-4 h-4 text-white fill-white" />
                                 </div>
                             </div>
                         </motion.div>
 
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+                        {/* Nostalgia Section */}
+                        <motion.section
+                            className="border-white/5"
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ duration: 0.8 }}
+                            viewport={{ once: true }}
+                        >
+                            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                                {/* <motion.p
+                                    className="text-xs uppercase tracking-widest text-purple-400 mb-5"
+                                    initial={{ opacity: 0, y: 16 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5 }}
+                                    viewport={{ once: true }}
+                                >
+                                    Why Replaylist?
+                                </motion.p> */}
+                                <motion.h2
+                                    className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.6, delay: 0.1 }}
+                                    viewport={{ once: true }}
+                                >
+                                    Wonder what you were listening to{" "}
+                                    <span className="text-purple-300">the summer of 2020?</span>
+                                </motion.h2>
+                                <motion.p
+                                    className="text-base md:text-lg text-slate-400 mb-6 max-w-2xl mx-auto leading-relaxed"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.6, delay: 0.2 }}
+                                    viewport={{ once: true }}
+                                >
+                                    That song stuck on the tip of your tongue, the one that defined a whole season.
+                                    Playlists get reshuffled, updated, deleted. The moment passes and it&apos;s gone.
+                                </motion.p>
+                                <motion.p
+                                    className="text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.6, delay: 0.3 }}
+                                    viewport={{ once: true }}
+                                >
+                                    Replaylist saves your playlists exactly as they were, your personal music archive,
+                                    so you never have to wonder again.
+                                </motion.p>
+                                <motion.div
+                                    className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 text-left"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.6, delay: 0.4 }}
+                                    viewport={{ once: true }}
+                                >
+                                    {[
+                                        { emoji: "📸", title: "Snapshot in time", body: "We capture your playlist exactly as it is today, every track, every ranking." },
+                                        { emoji: "🔁", title: "Watch it evolve", body: "See what got added, dropped, or climbed the ranks over weeks and months." },
+                                        { emoji: "🧠", title: "Never forget again", body: "Your music memory, stored. Go back to any moment and rediscover what you loved." },
+                                    ].map(({ emoji, title, body }) => (
+                                        <div key={title} className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+                                            <div className="text-2xl mb-3">{emoji}</div>
+                                            <h3 className="text-white font-semibold mb-2">{title}</h3>
+                                            <p className="text-sm text-slate-400 leading-relaxed">{body}</p>
+                                        </div>
+                                    ))}
+                                </motion.div>
+                            </div>
+                        </motion.section>
+                        {/* <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
                             About{" "}
                             <span className="text-purple-300">Replaylist</span>
                         </h1>
                         <p className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto ">
                             Ever wonder what you were listening to 5 years ago? Replaylist takes snapshots of your Spotify playlists over time, so you can always look back and remember the songs that defined a moment.
-                        </p>
+                        </p> */}
                     </div>
                 </div>
             </motion.div>
@@ -185,7 +254,7 @@ export default function AboutPage() {
                 transition={{ duration: 0.6, delay: 0.4 }}
             >
                 <Link
-                    href="/"
+                    href="/login"
                     className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
                 >
                     <Play className="h-4 w-4 fill-white" />
