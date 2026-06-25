@@ -83,7 +83,7 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
                                             {user?.name}
                                         </h1>
                                         <div className='flex items-center space-x-1 mt-1'>
-                                            <span className='text-slate-200'>Link to </span>
+                                            {/* <span className='text-slate-200'>Link to </span> */}
                                             <Image
                                                 height={300}
                                                 width={300}
@@ -91,18 +91,18 @@ const UserComponent = ({ user, playlistData, trackedPlaylists, isOwner = false }
                                                 alt={'icon'}
                                                 className="w-6 h-6 rounded-lg object-cover mx-0"
                                             />
-                                            <span className='text-slate-200 pl-[-4px]'>: @</span>
+                                            <span className='text-slate-200 pl-[-4px]'></span>
                                             {hasSpotifyProfile ? (
                                                 <Link
                                                     href={`https://open.spotify.com/user/${user?.spotifyId}`}
-                                                    className="transition-all text-base text-slate-400 font-semibold hover:text-slate-300 pl-[-4px]"
+                                                    className="transition-all text-sm text-slate-400 font-semibold hover:text-slate-300 pl-[-4px]"
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                 >
                                                     {user?.name}
                                                 </Link>
                                             ) : (
-                                                <span className="pl-[-4px] text-base font-semibold text-slate-500">
+                                                <span className="pl-[-4px] text-sm font-semibold text-slate-500">
                                                     N/A
                                                 </span>
                                             )}

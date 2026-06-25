@@ -157,7 +157,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
     const previousSnapshot = currentSnapshotIndex >= 0 ? mySnapshots[currentSnapshotIndex + 1] ?? null : null;
     const isOldestSnapshot = previousSnapshot === null && mySnapshots.length > 1;
 
-    const { data: prevSnapshotDetails } = useQuery({
+    const { data: prevSnapshotDetails, isFetched: prevSnapshotFetched } = useQuery({
         queryKey: ['snapshot', playlistId, previousSnapshot?.id],
         queryFn: () => getSnapshotById(playlistId, previousSnapshot?.id || ""),
         enabled: !!previousSnapshot,
@@ -234,9 +234,9 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                         </div>
                                         {changeSummary && (
                                             <div className="flex items-center gap-3 text-xs">
-                                                {changeSummary.newCount > 0 && <span className="text-purple-300 font-medium">{changeSummary.newCount} new</span>}
-                                                {changeSummary.upCount > 0 && <span className="text-emerald-400 font-medium">↑ {changeSummary.upCount}</span>}
-                                                {changeSummary.downCount > 0 && <span className="text-rose-400 font-medium">↓ {changeSummary.downCount}</span>}
+                                                <span className={`font-medium ${changeSummary.newCount > 0 ? 'text-purple-300' : 'text-slate-600'}`}>{changeSummary.newCount} new</span>
+                                                <span className={`font-medium ${changeSummary.upCount > 0 ? 'text-emerald-400' : 'text-slate-600'}`}>↑ {changeSummary.upCount}</span>
+                                                <span className={`font-medium ${changeSummary.downCount > 0 ? 'text-rose-400' : 'text-slate-600'}`}>↓ {changeSummary.downCount}</span>
                                             </div>
                                         )}
                                     </div>
@@ -252,7 +252,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                                     key={snapshot.id}
                                                     onClick={() => handleChangeSnapshot(snapshot.id)}
                                                     className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${snapshotData?.id === snapshot.id
-                                                        ? 'bg-purple-400 text-black shadow-lg shadow-purple-500/20'
+                                                        ? 'bg-purple-400 text-black shadow-sm shadow-purple-500/20'
                                                         : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white border border-white/10'
                                                         }`}
                                                 >
@@ -345,7 +345,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                             {showSnapshotTracks &&
                                                 filteredSnapshotTracks?.map((track: SnapshotTrack) => {
                                                     const prevRank = prevRankMap.get(track.trackId);
-                                                    const isNew = previousSnapshot !== null && prevRank === undefined;
+                                                    const isNew = previousSnapshot !== null && prevSnapshotFetched && prevRank === undefined;
                                                     const rankDiff = prevRank !== undefined ? prevRank - track.rank : null;
                                                     return (
                                                         <Link

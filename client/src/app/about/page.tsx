@@ -57,7 +57,7 @@ export default function AboutPage() {
                                     transition={{ duration: 0.5 }}
                                     viewport={{ once: true }}
                                 >
-                                    Why Replaylist?
+                                    Your Spotify Playlist Time Machine.
                                 </motion.p> */}
                                 <motion.h2
                                     className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight"
@@ -69,6 +69,15 @@ export default function AboutPage() {
                                     Wonder what you were listening to{" "}
                                     <span className="text-purple-300">the summer of 2020?</span>
                                 </motion.h2>
+                                <motion.p
+                                    className="text-lg md:text-2xl font-semibold text-purple-300 mb-6"
+                                    initial={{ opacity: 0, y: 16 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5, delay: 0.15 }}
+                                    viewport={{ once: true }}
+                                >
+                                    Your Spotify Playlist Time Machine.
+                                </motion.p>
                                 <motion.p
                                     className="text-base md:text-lg text-slate-400 mb-6 max-w-2xl mx-auto leading-relaxed"
                                     initial={{ opacity: 0, y: 20 }}

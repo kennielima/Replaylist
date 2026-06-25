@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Replaylist: Spotify Playlist History Tracker",
-  description: "Playlist-in-Time",
+  title: "Replaylist: Track Your Spotify Playlists Over Time",
+  description: "Replaylist takes snapshots of your Spotify playlists over time, so you can look back and rediscover the songs that defined every moment",
   icons: {
     icon: "/logo.svg",
   }
