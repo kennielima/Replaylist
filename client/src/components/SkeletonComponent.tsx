@@ -4,9 +4,9 @@ import { Card, CardContent } from './ui/card'
 
 const SkeletonComponent = () => {
     return (
-        <div className="flex flex-col gap-8 p-20">
-            <div className="flex sm:flex-row flex-col gap-12">
-                <Card className="bg-white/5 backdrop-blur-md border border-white/10 w-full sm:w-1/2 lg:w-1/3">
+        <div className="flex flex-col gap-8 p-12 md:p-20">
+            <div className="flex md:flex-row flex-col gap-12">
+                <Card className="bg-white/5 backdrop-blur-md border border-white/10 w-full md:w-1/2 lg:w-1/3">
                     <CardContent className="p-0">
                         <Skeleton className="w-full h-64 rounded-t-lg" />
                         <div className="p-6">

@@ -69,7 +69,7 @@ const PlaylistHeader = ({
                         )}
                     </div>
 
-                    <h1 className="text-4xl md:text-5xl font-bold text-slate-300 mb-4">{playlist?.name}</h1>
+                    <h1 className="text-4xl md:text-5xl font-bold text-slate-300 my-4">{playlist?.name}</h1>
 
                     <p
                         className="text-lg text-slate-300 leading-relaxed mb-6"
@@ -121,14 +121,14 @@ const PlaylistHeader = ({
                                             <Alert className="border-purple-500/20 bg-purple-500/10">
                                                 <Camera className="h-4 w-4 text-purple-400" />
                                                 <AlertDescription className="text-purple-300">
-                                                    We&apos;ll automatically take snapshots every week and notify you of changes.
+                                                    We&apos;ll automatically take snapshots of this playlist every week.
                                                 </AlertDescription>
                                             </Alert>
                                             <div className="text-sm text-slate-400">
                                                 <p>• Weekly snapshots of track changes</p>
                                                 {/* <p>• Notifications for major updates</p> */}
                                                 <p>• Historical trends and data</p>
-                                                <p>• Export tracking data anytime</p>
+                                                {/* <p>• Export tracking data anytime</p> */}
                                             </div>
                                         </div>
                                         <DialogFooter>

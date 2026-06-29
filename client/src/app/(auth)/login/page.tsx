@@ -5,8 +5,8 @@ import React from 'react'
 
 const page = () => {
     return (
-        <div className='flex flex-col gap-6 my-12 items-center'>
-            <div className="flex flex-col items-center gap-4 text-center w-2/4">
+        <div className='flex flex-col gap-6 m-8 items-center'>
+            <div className="flex flex-col items-center gap-4 text-center">
                 <div className="flex items-center justify-center space-x-2">
                     <div className="relative p-2 bg-purple-600/20 rounded-lg border border-purple-500/30">
                         <Headphones className="h-7 w-7 text-green-400/90" />
@@ -16,7 +16,7 @@ const page = () => {
                     </div>
                     <h3 className="text-3xl font-bold text-purple-400">Replaylist</h3>
                 </div>
-                <h3 className="text-4xl font-semibold text-white">Your Spotify Journey Visualized</h3>
+                <h3 className="text-2xl font-semibold text-white">Your Spotify Journey Visualized</h3>
                 <h3 className="text-slate-300">Connect your Spotify account and track your favourite playlists, see the evolution of popular music charts.</h3>
             </div>
             <Card className="w-full max-w-sm bg-white/10 backdrop-blur-xl mt-2 shadow-2xl p-8">

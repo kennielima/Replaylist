@@ -12,12 +12,12 @@ export const featuredPlaylists = [
         id: "2khn1j2muqFCP1bZveUgEt"
     },
     {
-        name: "Apple Top 100 UK",
-        id: "0Ra05IrSpRRAIkuCv84S1i"
-    },
-    {
         name: "Apple Top 100: Global Music Chart",
         id: "78NQrPKFNrNDLsJTsGBitq"
+    },
+    {
+        name: "Apple Top 100 UK",
+        id: "0Ra05IrSpRRAIkuCv84S1i"
     },
     {
         name: "Top 100: France",

@@ -193,7 +193,7 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                                                 </div>
 
                                                 <div className="flex flex-1 flex-col p-6">
-                                                    <div className="space-y-3">
+                                                    <div className="sm:space-y-3 pb-4">
                                                         <h3 className="min-h-14 text-lg font-bold text-white transition-colors line-clamp-2 group-hover:text-purple-300">
                                                             {playlist.name}
                                                         </h3>

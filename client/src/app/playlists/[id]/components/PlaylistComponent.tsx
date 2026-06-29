@@ -186,6 +186,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
     const showOverflowHint = mySnapshots.length > 5;
     const snapshotScrollRef = useRef<HTMLDivElement>(null);
     const [snapshotScrollLeft, setSnapshotScrollLeft] = useState(0);
+    const [snapshotScrolledToEnd, setSnapshotScrolledToEnd] = useState(false);
 
     return (
         <Fragment>
@@ -232,19 +233,32 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                             </div>
                                             <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full font-medium sm:ml-1">{mySnapshots.length} saved</span>
                                         </div>
-                                        {changeSummary && (
-                                            <div className="flex items-center gap-3 text-xs">
-                                                <span className={`font-medium ${changeSummary.newCount > 0 ? 'text-purple-300' : 'text-slate-600'}`}>{changeSummary.newCount} new</span>
-                                                <span className={`font-medium ${changeSummary.upCount > 0 ? 'text-emerald-400' : 'text-slate-600'}`}>↑ {changeSummary.upCount}</span>
-                                                <span className={`font-medium ${changeSummary.downCount > 0 ? 'text-rose-400' : 'text-slate-600'}`}>↓ {changeSummary.downCount}</span>
+                                        <div className="flex items-center gap-3 text-xs min-h-[1.25rem]">
+                                            <div className="min-h-[1rem]">
+                                                {changeSummary && (
+                                                    <div className="flex items-center gap-3 text-xs">
+                                                        <span className={`font-medium ${changeSummary.newCount > 0 ? 'text-purple-300' : 'text-slate-600'}`}>{changeSummary.newCount} new</span>
+                                                        <span className={`font-medium ${changeSummary.upCount > 0 ? 'text-emerald-400' : 'text-slate-600'}`}>↑ {changeSummary.upCount}</span>
+                                                        <span className={`font-medium ${changeSummary.downCount > 0 ? 'text-rose-400' : 'text-slate-600'}`}>↓ {changeSummary.downCount}</span>
+                                                    </div>
+                                                )}
                                             </div>
+                                        </div>
+                                        {isOldestSnapshot && showSnapshotTracks && (
+                                            <p className="text-xs text-slate-500">
+                                                Earliest snapshot
+                                            </p>
                                         )}
                                     </div>
 
                                     <div className="relative">
                                         <div
                                             ref={snapshotScrollRef}
-                                            onScroll={(e) => setSnapshotScrollLeft(e.currentTarget.scrollLeft)}
+                                            onScroll={(e) => {
+                                                const el = e.currentTarget;
+                                                setSnapshotScrollLeft(el.scrollLeft);
+                                                setSnapshotScrolledToEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 1);
+                                            }}
                                             className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
                                         >
                                             {mySnapshots.map((snapshot: Snapshot) => (
@@ -265,15 +279,15 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                                 onClick={() => snapshotScrollRef.current?.scrollBy({ left: -120, behavior: 'smooth' })}
                                                 className="group absolute left-0 top-0 bottom-1 w-10 bg-gradient-to-r from-[#040811] to-transparent flex items-center justify-start cursor-pointer"
                                             >
-                                                <ChevronLeft className="h-3.5 w-3.5 text-slate-200 transition-all group-hover:text-white group-hover:scale-110" />
+                                                <ChevronLeft className="h-4 w-4 text-slate-200 transition-all group-hover:text-white group-hover:scale-110" />
                                             </button>
                                         )}
-                                        {showOverflowHint && (
+                                        {showOverflowHint && !snapshotScrolledToEnd && (
                                             <button
                                                 onClick={() => snapshotScrollRef.current?.scrollBy({ left: 120, behavior: 'smooth' })}
                                                 className="group absolute right-0 top-0 bottom-1 w-10 bg-gradient-to-l from-[#040811] to-transparent flex items-center justify-end cursor-pointer"
                                             >
-                                                <ChevronRight className="h-3.5 w-3.5 text-slate-200 transition-all group-hover:text-white group-hover:scale-110" />
+                                                <ChevronRight className="h-4 w-4 text-slate-200 transition-all group-hover:text-white group-hover:scale-110" />
                                             </button>
                                         )}
                                     </div>
@@ -293,12 +307,7 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                     />
                                 </CardHeader>
                                 <CardContent className="space-y-4">
-                                    {isOldestSnapshot && showSnapshotTracks && (
-                                        <p className="text-xs text-slate-500 pb-2 border-b border-white/5">
-                                            Earliest snapshot — no prior data to compare.
-                                        </p>
-                                    )}
-                                    {isChangingSnapshot || snapshotIsLoading ? (
+                                    {/* {isChangingSnapshot || snapshotIsLoading ? (
                                         <div className="space-y-3">
                                             {[...Array(8)].map((_, i) => (
                                                 <div key={i} className="flex items-center space-x-3 p-3 animate-pulse">
@@ -310,28 +319,73 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                                 </div>
                                             ))}
                                         </div>
-                                    ) : (
-                                        <>
-                                            {!showSnapshotTracks &&
-                                                filteredSnapTracks?.map((track: Track) => (
+                                    ) : ( */}
+                                    <>
+                                        {!showSnapshotTracks &&
+                                            filteredSnapTracks?.map((track: Track) => (
+                                                <Link
+                                                    key={track.rank}
+                                                    href={`https://open.spotify.com/track/${track.trackId}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    <div className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors">
+                                                        <div className="flex items-start space-x-3">
+                                                            <div className="w-8 h-8 shrink-0 bg-purple-600/20 rounded flex items-center justify-center text-purple-300 text-sm font-medium mt-0.5">
+                                                                {track.rank}
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-white font-medium">{track.name}</p>
+                                                                <p className="text-sm text-slate-400">
+                                                                    {track?.artists?.map((artist: string, index: number) =>
+                                                                        <span key={index}>
+                                                                            {artist}
+                                                                            {(track.artists.length > 1 && index < track.artists.length - 1) && ', '}
+                                                                        </span>
+                                                                    )}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <Play aria-label="Play on Spotify" className="h-5 w-5 shrink-0 hover:scale-120 transition-transform duration-300 text-slate-400 hover:text-white" />
+                                                    </div>
+                                                </Link>
+                                            ))
+                                        }
+                                        {showSnapshotTracks &&
+                                            filteredSnapshotTracks?.map((track: SnapshotTrack) => {
+                                                const prevRank = prevRankMap.get(track.trackId);
+                                                const isNew = previousSnapshot !== null && prevSnapshotFetched && prevRank === undefined;
+                                                const rankDiff = prevRank !== undefined ? prevRank - track.rank : null;
+                                                return (
                                                     <Link
                                                         key={track.rank}
                                                         href={`https://open.spotify.com/track/${track.trackId}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                     >
-                                                        <div className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors">
+                                                        <div className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors space-x-2">
                                                             <div className="flex items-start space-x-3">
                                                                 <div className="w-8 h-8 shrink-0 bg-purple-600/20 rounded flex items-center justify-center text-purple-300 text-sm font-medium mt-0.5">
                                                                     {track.rank}
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-white font-medium">{track.name}</p>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <p className="text-white font-medium">{track?.track?.name}</p>
+                                                                        {isNew && (
+                                                                            <span className="text-xs px-1.5 py-0.5 font-semibold rounded-full bg-purple-500/20 text-purple-300 tracking-wide">NEW</span>
+                                                                        )}
+                                                                        {rankDiff !== null && rankDiff > 0 && (
+                                                                            <span className="text-xs font-semibold text-emerald-400">↑{rankDiff}</span>
+                                                                        )}
+                                                                        {rankDiff !== null && rankDiff < 0 && (
+                                                                            <span className="text-xs font-semibold text-rose-400">↓{Math.abs(rankDiff)}</span>
+                                                                        )}
+                                                                    </div>
                                                                     <p className="text-sm text-slate-400">
-                                                                        {track?.artists?.map((artist: string, index: number) =>
+                                                                        {track?.track?.artists?.map((artist: string, index: number) =>
                                                                             <span key={index}>
                                                                                 {artist}
-                                                                                {(track.artists.length > 1 && index < track.artists.length - 1) && ', '}
+                                                                                {(track?.track?.artists.length > 1 && index < track?.track?.artists.length - 1) && ', '}
                                                                             </span>
                                                                         )}
                                                                     </p>
@@ -340,55 +394,10 @@ export default function PlaylistPage({ playlistData, playlistsData, currUser, tr
                                                             <Play aria-label="Play on Spotify" className="h-5 w-5 shrink-0 hover:scale-120 transition-transform duration-300 text-slate-400 hover:text-white" />
                                                         </div>
                                                     </Link>
-                                                ))
-                                            }
-                                            {showSnapshotTracks &&
-                                                filteredSnapshotTracks?.map((track: SnapshotTrack) => {
-                                                    const prevRank = prevRankMap.get(track.trackId);
-                                                    const isNew = previousSnapshot !== null && prevSnapshotFetched && prevRank === undefined;
-                                                    const rankDiff = prevRank !== undefined ? prevRank - track.rank : null;
-                                                    return (
-                                                        <Link
-                                                            key={track.rank}
-                                                            href={`https://open.spotify.com/track/${track.trackId}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                        >
-                                                            <div className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors space-x-2">
-                                                                <div className="flex items-start space-x-3">
-                                                                    <div className="w-8 h-8 shrink-0 bg-purple-600/20 rounded flex items-center justify-center text-purple-300 text-sm font-medium mt-0.5">
-                                                                        {track.rank}
-                                                                    </div>
-                                                                    <div>
-                                                                        <div className="flex items-center gap-2">
-                                                                            <p className="text-white font-medium">{track?.track?.name}</p>
-                                                                            {isNew && (
-                                                                                <span className="text-xs px-1.5 py-0.5 font-semibold rounded-full bg-purple-500/20 text-purple-300 tracking-wide">NEW</span>
-                                                                            )}
-                                                                            {rankDiff !== null && rankDiff > 0 && (
-                                                                                <span className="text-xs font-semibold text-emerald-400">↑{rankDiff}</span>
-                                                                            )}
-                                                                            {rankDiff !== null && rankDiff < 0 && (
-                                                                                <span className="text-xs font-semibold text-rose-400">↓{Math.abs(rankDiff)}</span>
-                                                                            )}
-                                                                        </div>
-                                                                        <p className="text-sm text-slate-400">
-                                                                            {track?.track?.artists?.map((artist: string, index: number) =>
-                                                                                <span key={index}>
-                                                                                    {artist}
-                                                                                    {(track?.track?.artists.length > 1 && index < track?.track?.artists.length - 1) && ', '}
-                                                                                </span>
-                                                                            )}
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <Play aria-label="Play on Spotify" className="h-5 w-5 shrink-0 hover:scale-120 transition-transform duration-300 text-slate-400 hover:text-white" />
-                                                            </div>
-                                                        </Link>
-                                                    );
-                                                })}
-                                        </>
-                                    )}
+                                                );
+                                            })}
+                                    </>
+                                    {/* )} */}
                                 </CardContent>
                             </Card>
                         </div>
