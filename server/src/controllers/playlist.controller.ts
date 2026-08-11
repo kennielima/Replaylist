@@ -88,7 +88,9 @@ async function getFeaturedPlaylists(req: TokenRequest, res: Response) {
             }
         }
 
-        await redis.set(cacheKey, JSON.stringify({ data: playlists }), "EX", 86400);
+        if (playlists.length > 0) {
+            await redis.set(cacheKey, JSON.stringify({ data: playlists }), "EX", 86400);
+        }
 
         return res.status(200).json({ data: playlists });
 

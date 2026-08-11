@@ -22,8 +22,7 @@ async function fetchTracks(id: string, accessToken: string) {
         headers: { 'Authorization': 'Bearer ' + accessToken },
     });
     if (!responseData.ok) {
-        const errorBody = await responseData.text();
-        return errorBody;
+        return { items: [] };
     }
 
     const data = await responseData.json();

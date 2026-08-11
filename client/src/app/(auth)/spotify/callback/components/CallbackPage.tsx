@@ -24,17 +24,16 @@ const CallbackPage = ({ user }: { user: User }) => {
                 return prev + 10;
             });
         }, 150);
-    }, [])
 
-    if (!user) {
-        setTimeout(() => {
-            router.push('/login')
-        }, 100);
-    } else {
-        setTimeout(() => {
-            router.push('/')
-        }, 100);
-    }
+        const redirect = setTimeout(() => {
+            router.push(user ? '/' : '/login');
+        }, 1500);
+
+        return () => {
+            clearInterval(timer);
+            clearTimeout(redirect);
+        };
+    }, [])
 
     return (
         <div className='m-12 backdrop-blur-xl'>

@@ -46,7 +46,7 @@ const MobileNav = ({ user }: { user: User }) => {
             </button>
 
             <Sheet open={open} onOpenChange={setOpen}>
-                <SheetContent side="top" showCloseButton={false} className="h-auto bg-[#111009] border-none px-6 pb-6 flex flex-col gap-6 data-[state=closed]:duration-300 data-[state=open]:duration-300">
+                <SheetContent side="top" showCloseButton={false} className="group h-auto bg-[#111009] border-none px-6 pb-6 flex flex-col gap-6 data-[state=closed]:duration-300 data-[state=open]:duration-300">
                     {/* Mirror header */}
                     <div className="flex items-center justify-between h-24">
                         <Link href="/" onClick={close} className="flex items-center space-x-3 shrink-0">
