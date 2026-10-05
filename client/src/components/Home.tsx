@@ -253,11 +253,11 @@ const Homepage = ({ playlistData, user }: HomepageProps) => {
                             <div className="">Popular Charts</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-3xl md:text-4xl font-bold mb-2">20+</div>
+                            <div className="text-3xl md:text-4xl font-bold mb-2">75+</div>
                             <div className="">Playlists Tracked</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-3xl md:text-4xl font-bold mb-2">5+</div>
+                            <div className="text-3xl md:text-4xl font-bold mb-2">10+</div>
                             <div className="">Active Users</div>
                         </div>
                         <div className="text-center">
